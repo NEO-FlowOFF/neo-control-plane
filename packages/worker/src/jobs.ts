@@ -10,6 +10,10 @@ import {
   markWebhookEventProcessing,
   revokeSocialAccountByShopId,
 } from "@neomello/db";
+import {
+  fetchPlatformAnnouncements,
+  filterTikTokAnnouncements
+} from "./announcements.js";
 import { config } from "./config.js";
 import {
   inventoryPublisherQueue,
@@ -75,10 +79,10 @@ export async function handleRefreshTokenJob(
     tokenExpiresAt: new Date(Date.now() + refreshed.expires_in * 1000),
     ...(refreshed.refresh_expires_in
       ? {
-          refreshExpiresAt: new Date(
-            Date.now() + refreshed.refresh_expires_in * 1000,
-          ),
-        }
+        refreshExpiresAt: new Date(
+          Date.now() + refreshed.refresh_expires_in * 1000,
+        ),
+      }
       : {}),
   });
 }
@@ -204,5 +208,20 @@ export async function enqueuePendingWebhookEvents(): Promise<void> {
         },
       },
     );
+  }
+}
+
+export async function handlePlatformAnnouncementsJob(): Promise<void> {
+  const all = await fetchPlatformAnnouncements();
+  const tiktokOnly = filterTikTokAnnouncements(all);
+
+  if (tiktokOnly.length > 0 && tiktokOnly[0]) {
+    // Aqui no futuro podemos disparar um e-mail para a FlowOff
+    // Por enquanto, vamos apenas logar de forma estruturada para o Railway
+    console.log("TIKTOK_PLATFORM_ANNOUNCEMENTS_DETECTED", {
+      count: tiktokOnly.length,
+      latest: tiktokOnly[0].title,
+      link: tiktokOnly[0].link
+    });
   }
 }

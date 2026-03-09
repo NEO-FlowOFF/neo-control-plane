@@ -1,72 +1,41 @@
-# Julia JTT TikTok Stack
+# Neoflowoff TikTok Shop Platform
 
-Monorepo preparado para Railway com:
+Plataforma unificada da **FlowOff** (`FLOWOFF MARKETING E ASSESSORIA DIGITAL LTDA - ME`) para gerenciamento e automação de múltiplos vendedores no ecossistema TikTok Shop.
 
-- `@neomello/db`: Prisma 7, cofre de estado e criptografia simetrica para tokens OAuth.
-- `@neomello/tiktok-sdk`: cliente de posting TikTok com validacao de payload.
-- `@neomello/api`: OAuth callback, authorize URL e webhook ingress idempotente.
-- `@neomello/worker`: BullMQ, refresh de token, projector da inbox e push de inventario.
+## 🏢 Contexto Administrativo
+- **Empresa:** FlowOff Marketing e Assessoria Digital
+- **CNPJ:** `43.376.355/0001-92`
+- **Papel:** Service Provider (Agência/Admin) para gestão de vendedores.
 
-## Servicos Railway
+---
 
-### Infra
+## 🏗️ Estrutura Multi-Seller
 
-- PostgreSQL Railway para `DATABASE_URL`
-- Redis Railway para `REDIS_URL`
+O projeto separa o "motor" das configurações de cada cliente para permitir escala rápida da equipe de vendas:
 
-### API
+- **`packages/`**: O Core da plataforma (Código Compartilhado).
+  - `@neomello/db`: Prisma 7, criptografia de tokens e controle de estado.
+  - `@neomello/tiktok-sdk`: Cliente de API TikTok Shop.
+  - `@neomello/api`: OAuth, Webhooks e endpoints de gerenciamento.
+  - `@neomello/worker`: Automações, refresh de tokens e jobs assíncronos.
+- **`accounts/`**: Configurações e identidades de cada vendedor (Instâncias).
+  - `accounts/julia-jtt-tiktok/`: Instância inicial ativa.
 
-- Root Directory: repositorio raiz
-- Build Command: `npm run db:generate && npm run build`
-- Start Command: `npm run start --workspace @neomello/api`
+---
 
-### Worker
+## � Fluxo de Operação
+Para detalhes de configuração de infraestrutura, variáveis de ambiente e comandos de build, consulte o guia técnico:
 
-- Root Directory: repositorio raiz
-- Build Command: `npm run db:generate && npm run build`
-- Start Command: `npm run start --workspace @neomello/worker`
+� **[SETUP.md](./SETUP.md)**
 
-### Cron
+1. **Autorização**: Agência gera URL de autorização para o vendedor.
+2. **Sincronização**: Troca de chaves e armazenamento seguro.
+3. **Automação**: O motor processa inventário, anúncios e webhooks em tempo real.
 
-- nao precisa de servico separado
-- o proprio worker agenda o scan de refresh e inbox com BullMQ Job Scheduler
-- Schedule sugerido: `*/5 * * * *`
+---
 
-## Variaveis de ambiente
+## 🚀 Expansão da Equipe
+Para adicionar um novo vendedor, siga o padrão de diretórios em `accounts/` e utilize o `workspaceId` para isolamento de dados.
 
-### Compartilhadas
-
-- `DATABASE_URL`
-- `REDIS_URL`
-- `TOKEN_ENCRYPTION_KEY`
-
-### API
-
-- `PORT`
-- `API_BASE_URL`
-- `TIKTOK_SHOP_APP_KEY`
-- `TIKTOK_SHOP_APP_SECRET`
-- `TIKTOK_SHOP_AUTHORIZE_URL`
-- `TIKTOK_SHOP_TOKEN_URL`
-- `TIKTOK_SHOP_REDIRECT_URI`
-- `OAUTH_STATE_SECRET`
-- `TIKTOK_WEBHOOK_SIGNATURE_HEADER`
-- `TIKTOK_WEBHOOK_TIMESTAMP_HEADER`
-- `TIKTOK_WEBHOOK_SECRET`
-
-### Worker
-
-- `TIKTOK_SHOP_API_BASE_URL`
-- `TIKTOK_SHOP_TOKEN_URL`
-- `TIKTOK_SHOP_APP_KEY`
-- `TIKTOK_SHOP_APP_SECRET`
-- `TIKTOK_SHOP_AUTH_REVOKED_EVENT`
-- `TIKTOK_SHOP_INVENTORY_UPDATE_PATH`
-
-## Fluxo
-
-1. `GET /oauth/tiktok-shop/authorize` gera URL autorizacao com `state` assinado.
-2. `GET /oauth/tiktok-shop/callback` troca `code` por tokens e grava `SocialAccount`.
-3. `POST /webhooks/tiktok-shop` valida assinatura e grava `WebhookEventInbox`.
-4. `cron` enfileira refresh de token e eventos pendentes.
-5. `worker` processa filas com kill switch por `status = ACTIVE` e agenda scans recorrentes de refresh/webhook.
+---
+*Mantido por Neomello para FlowOff Assessoria Digital.*

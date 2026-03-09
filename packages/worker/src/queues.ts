@@ -16,3 +16,8 @@ export const webhookProjectorQueue = new Queue(webhookProjectorQueueName, {
 export const inventoryPublisherQueue = new Queue(inventoryPublisherQueueName, {
   connection: redisConnection,
 });
+
+export const platformAnnouncementsQueueName = "monitor-platform-announcements";
+export const platformAnnouncementsQueue = new Queue(platformAnnouncementsQueueName, {
+  connection: redisConnection,
+});

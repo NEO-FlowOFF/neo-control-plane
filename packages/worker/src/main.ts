@@ -12,7 +12,12 @@ import {
   handleInventoryPublisherJob,
   handleRefreshTokenJob,
   handleWebhookProjectorJob,
+  handlePlatformAnnouncementsJob,
 } from "./jobs.js";
+import {
+  platformAnnouncementsQueue,
+  platformAnnouncementsQueueName
+} from "./queues.js";
 
 await refreshTokensQueue.upsertJobScheduler(
   "scan-refreshable-accounts",
@@ -30,6 +35,17 @@ await webhookProjectorQueue.upsertJobScheduler(
   { every: 60 * 1000 },
   {
     name: "scan-pending-webhooks",
+    opts: {
+      removeOnComplete: true,
+    },
+  },
+);
+
+await platformAnnouncementsQueue.upsertJobScheduler(
+  "scan-platform-announcements",
+  { every: 60 * 60 * 1000 }, // Uma vez por hora
+  {
+    name: "scan-platform-announcements",
     opts: {
       removeOnComplete: true,
     },
@@ -55,7 +71,16 @@ const inventoryWorker = new Worker(
   },
 );
 
-for (const worker of [refreshWorker, webhookWorker, inventoryWorker]) {
+const announcementWorker = new Worker(
+  platformAnnouncementsQueueName,
+  handlePlatformAnnouncementsJob,
+  {
+    connection: redisConnection,
+    concurrency: 1,
+  },
+);
+
+for (const worker of [refreshWorker, webhookWorker, inventoryWorker, announcementWorker]) {
   worker.on("failed", (job, error) => {
     console.error("worker_job_failed", {
       queue: worker.name,
@@ -70,9 +95,11 @@ process.on("SIGTERM", async () => {
     refreshWorker.close(),
     webhookWorker.close(),
     inventoryWorker.close(),
+    announcementWorker.close(),
     refreshTokensQueue.close(),
     webhookProjectorQueue.close(),
     inventoryPublisherQueue.close(),
+    platformAnnouncementsQueue.close(),
     redisConnection.quit(),
   ]);
   process.exit(0);
