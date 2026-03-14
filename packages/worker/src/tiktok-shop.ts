@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+const FETCH_TIMEOUT_MS = 15_000;
+
 const refreshResponseSchema = z.object({
   access_token: z.string(),
   refresh_token: z.string(),
@@ -26,6 +28,7 @@ export async function refreshOAuthTokens(input: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
     body,
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
   });
 
   const json = (await response.json()) as unknown;
@@ -57,10 +60,11 @@ export async function pushInventoryUpdate(input: {
       quantity: input.quantity,
       warehouse_id: input.warehouseId,
     }),
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
   });
 
   if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`TikTok inventory update failed: ${body}`);
+    const text = await response.text();
+    throw new Error(`TikTok inventory update failed: ${text}`);
   }
 }

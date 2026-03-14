@@ -9,7 +9,7 @@ export {
   markSocialAccountRefreshSuccess,
   markWebhookEventDead,
   markWebhookEventDone,
-  markWebhookEventProcessing,
+  claimWebhookEventForProcessing,
   revokeSocialAccountByShopId,
   upsertSocialAccountTokens,
   upsertWebhookEvent,

@@ -1,4 +1,4 @@
-import { createHash, createHmac } from "node:crypto";
+import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import fastify from "fastify";
 import sensible from "@fastify/sensible";
 import rawBody from "fastify-raw-body";
@@ -126,8 +126,23 @@ app.post(
       .update(`${timestampHeader}.${rawPayload}`)
       .digest("hex");
 
-    if (computedSignature !== signatureHeader) {
+    const sigBuffer = Buffer.from(signatureHeader, "utf8");
+    const expectedBuffer = Buffer.from(computedSignature, "utf8");
+
+    if (
+      sigBuffer.length !== expectedBuffer.length ||
+      !timingSafeEqual(sigBuffer, expectedBuffer)
+    ) {
       throw app.httpErrors.unauthorized("Invalid webhook signature.");
+    }
+
+    const timestampMs = Number(timestampHeader) * 1000;
+    const MAX_WEBHOOK_AGE_MS = 5 * 60 * 1000;
+    if (
+      Number.isNaN(timestampMs) ||
+      Math.abs(Date.now() - timestampMs) > MAX_WEBHOOK_AGE_MS
+    ) {
+      throw app.httpErrors.unauthorized("Webhook timestamp expired or invalid.");
     }
 
     const payload = request.body as {
@@ -172,6 +187,16 @@ app.post(
     return reply.send({ ok: true });
   },
 );
+
+async function gracefulShutdown(signal: string) {
+  app.log.info({ signal }, "Received shutdown signal, closing server...");
+  await app.close();
+  await prisma.$disconnect();
+  process.exit(0);
+}
+
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+process.on("SIGINT", () => gracefulShutdown("SIGINT"));
 
 await app.listen({
   host: "0.0.0.0",

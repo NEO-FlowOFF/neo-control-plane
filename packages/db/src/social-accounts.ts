@@ -191,14 +191,17 @@ export async function listPendingWebhookEvents(limit = 100): Promise<WebhookEven
   });
 }
 
-export async function markWebhookEventProcessing(id: string): Promise<void> {
-  await prisma.webhookEventInbox.update({
-    where: { id },
-    data: {
-      status: InboxStatus.PROCESSING,
-      retryCount: { increment: 1 },
-    },
-  });
+export async function claimWebhookEventForProcessing(
+  id: string,
+): Promise<WebhookEventInbox | null> {
+  const [claimed] = await prisma.$queryRawUnsafe<WebhookEventInbox[]>(
+    `UPDATE "WebhookEventInbox"
+     SET "status" = 'PROCESSING', "retryCount" = "retryCount" + 1
+     WHERE "id" = $1::uuid AND "status" = 'PENDING'
+     RETURNING *`,
+    id,
+  );
+  return claimed ?? null;
 }
 
 export async function markWebhookEventDone(id: string): Promise<void> {

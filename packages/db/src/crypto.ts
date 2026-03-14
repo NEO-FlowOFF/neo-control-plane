@@ -2,7 +2,11 @@ import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:
 
 const IV_LENGTH = 12;
 
+let cachedKey: Buffer | undefined;
+
 function resolveKey(): Buffer {
+  if (cachedKey) return cachedKey;
+
   const raw = process.env["TOKEN_ENCRYPTION_KEY"];
 
   if (!raw) {
@@ -10,20 +14,23 @@ function resolveKey(): Buffer {
   }
 
   if (/^[a-f0-9]{64}$/i.test(raw)) {
-    return Buffer.from(raw, "hex");
+    cachedKey = Buffer.from(raw, "hex");
+    return cachedKey;
   }
 
   try {
     const decoded = Buffer.from(raw, "base64");
 
     if (decoded.length === 32) {
-      return decoded;
+      cachedKey = decoded;
+      return cachedKey;
     }
   } catch {
     // Fall through to hash mode.
   }
 
-  return createHash("sha256").update(raw).digest();
+  cachedKey = createHash("sha256").update(raw).digest();
+  return cachedKey;
 }
 
 export function sealSecret(value: string): string {

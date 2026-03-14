@@ -5,9 +5,9 @@ import {
   listPendingWebhookEvents,
   markSocialAccountRefreshFailure,
   markSocialAccountRefreshSuccess,
+  claimWebhookEventForProcessing,
   markWebhookEventDead,
   markWebhookEventDone,
-  markWebhookEventProcessing,
   revokeSocialAccountByShopId,
 } from "@neomello/db";
 import {
@@ -95,16 +95,13 @@ export async function handleWebhookProjectorJob(
     return;
   }
 
-  const pending = await listPendingWebhookEvents(500);
-  const event = pending.find(
-    (candidate) => candidate.id === job.data.webhookEventId,
-  );
+  // Atomic claim: SELECT + UPDATE in one query, prevents race conditions
+  const event = await claimWebhookEventForProcessing(job.data.webhookEventId);
 
   if (!event) {
+    // Already claimed by another worker or no longer PENDING
     return;
   }
-
-  await markWebhookEventProcessing(event.id);
 
   const account = await getSocialAccountById(event.socialAccountId);
 
@@ -113,29 +110,29 @@ export async function handleWebhookProjectorJob(
     return;
   }
 
-  const payload = event.rawPayload as WebhookPayload;
+  const webhookPayload = event.rawPayload as WebhookPayload;
 
-  if (payload.type === config.TIKTOK_SHOP_AUTH_REVOKED_EVENT && payload.shop_id) {
-    await revokeSocialAccountByShopId(payload.shop_id);
+  if (webhookPayload.type === config.TIKTOK_SHOP_AUTH_REVOKED_EVENT && webhookPayload.shop_id) {
+    await revokeSocialAccountByShopId(webhookPayload.shop_id);
     await markWebhookEventDone(event.id);
     return;
   }
 
-  const skuList = payload.data?.sku_list ?? [];
+  const skuList = webhookPayload.data?.sku_list ?? [];
 
   for (const sku of skuList) {
     if (!sku.sku_id || typeof sku.quantity !== "number") {
       continue;
     }
 
-    const payload: InventoryPublisherJobData = {
+    const jobData: InventoryPublisherJobData = {
       socialAccountId: account.id,
       skuId: sku.sku_id,
       quantity: sku.quantity,
       ...(sku.warehouse_id ? { warehouseId: sku.warehouse_id } : {}),
     };
 
-    await inventoryPublisherQueue.add("publish", payload, {
+    await inventoryPublisherQueue.add("publish", jobData, {
       jobId: `${event.id}:${sku.sku_id}`,
       removeOnComplete: true,
       attempts: 5,
@@ -216,8 +213,6 @@ export async function handlePlatformAnnouncementsJob(): Promise<void> {
   const tiktokOnly = filterTikTokAnnouncements(all);
 
   if (tiktokOnly.length > 0 && tiktokOnly[0]) {
-    // Aqui no futuro podemos disparar um e-mail para a FlowOff
-    // Por enquanto, vamos apenas logar de forma estruturada para o Railway
     console.log("TIKTOK_PLATFORM_ANNOUNCEMENTS_DETECTED", {
       count: tiktokOnly.length,
       latest: tiktokOnly[0].title,

@@ -149,7 +149,7 @@ function App() {
                         <a
                           href={item.link}
                           target="_blank"
-                          rel="noreferrer"
+                          rel="noopener noreferrer"
                           className="p-2 bg-gray-800 rounded-lg text-gray-400 hover:text-flowoff-400 hover:bg-flowoff-500/10 transition-all shadow-lg"
                         >
                           <ExternalLink size={16} />

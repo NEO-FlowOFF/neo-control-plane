@@ -1,11 +1,17 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 
+const STATE_MAX_AGE_MS = 10 * 60 * 1000; // 10 minutes
+
 type OAuthStatePayload = {
   workspaceId: string;
   shopId: string;
   provider: string;
   providerId?: string;
   username?: string;
+};
+
+type OAuthStateEnvelope = OAuthStatePayload & {
+  iat: number;
 };
 
 function base64UrlEncode(value: string): string {
@@ -24,7 +30,8 @@ export function encodeOAuthState(
   secret: string,
   payload: OAuthStatePayload,
 ): string {
-  const encodedPayload = base64UrlEncode(JSON.stringify(payload));
+  const envelope: OAuthStateEnvelope = { ...payload, iat: Date.now() };
+  const encodedPayload = base64UrlEncode(JSON.stringify(envelope));
   const signature = sign(secret, encodedPayload);
 
   return `${encodedPayload}.${signature}`;
@@ -51,7 +58,17 @@ export function decodeOAuthState(
     throw new Error("OAuth state signature mismatch.");
   }
 
-  return JSON.parse(base64UrlDecode(encodedPayload)) as OAuthStatePayload;
+  const envelope = JSON.parse(base64UrlDecode(encodedPayload)) as OAuthStateEnvelope;
+
+  if (
+    typeof envelope.iat !== "number" ||
+    Date.now() - envelope.iat > STATE_MAX_AGE_MS
+  ) {
+    throw new Error("OAuth state has expired.");
+  }
+
+  const { iat: _iat, ...payload } = envelope;
+  return payload;
 }
 
 export type { OAuthStatePayload };

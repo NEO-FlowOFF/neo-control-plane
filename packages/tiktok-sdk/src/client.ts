@@ -48,11 +48,15 @@ export class TikTokPostingClient {
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     };
 
-    const response = await fetch(`${this.baseUrl}${endpoint}`, requestInit);
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      ...requestInit,
+      signal: AbortSignal.timeout(15_000),
+    });
 
     const data = (await response.json()) as TikTokApiEnvelope<T>;
 
-    if (!response.ok || data.error?.code !== "ok") {
+    const hasError = !response.ok || (data.error && data.error.code !== "ok");
+    if (hasError) {
       throw new Error(
         `[TikTok API Error] ${data.error?.message ?? "Falha desconhecida"} (LogID: ${data.error?.log_id ?? "n/a"})`,
       );

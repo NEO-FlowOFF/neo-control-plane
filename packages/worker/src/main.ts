@@ -1,5 +1,5 @@
 import { Worker } from "bullmq";
-import { redisConnection } from "./connection.js";
+import { redisConnection, redisWorkerConnection } from "./connection.js";
 import {
   inventoryPublisherQueue,
   inventoryPublisherQueueName,
@@ -53,12 +53,12 @@ await platformAnnouncementsQueue.upsertJobScheduler(
 );
 
 const refreshWorker = new Worker(refreshTokensQueueName, handleRefreshTokenJob, {
-  connection: redisConnection,
+  connection: redisWorkerConnection,
   concurrency: 5,
 });
 
 const webhookWorker = new Worker(webhookProjectorQueueName, handleWebhookProjectorJob, {
-  connection: redisConnection,
+  connection: redisWorkerConnection,
   concurrency: 10,
 });
 
@@ -66,7 +66,7 @@ const inventoryWorker = new Worker(
   inventoryPublisherQueueName,
   handleInventoryPublisherJob,
   {
-    connection: redisConnection,
+    connection: redisWorkerConnection,
     concurrency: 20,
   },
 );
@@ -75,7 +75,7 @@ const announcementWorker = new Worker(
   platformAnnouncementsQueueName,
   handlePlatformAnnouncementsJob,
   {
-    connection: redisConnection,
+    connection: redisWorkerConnection,
     concurrency: 1,
   },
 );
@@ -90,17 +90,23 @@ for (const worker of [refreshWorker, webhookWorker, inventoryWorker, announcemen
   });
 }
 
-process.on("SIGTERM", async () => {
+async function gracefulShutdown(signal: string) {
+  console.log("worker_shutdown", { signal });
   await Promise.all([
     refreshWorker.close(),
     webhookWorker.close(),
     inventoryWorker.close(),
     announcementWorker.close(),
+  ]);
+  await Promise.all([
     refreshTokensQueue.close(),
     webhookProjectorQueue.close(),
     inventoryPublisherQueue.close(),
     platformAnnouncementsQueue.close(),
-    redisConnection.quit(),
   ]);
+  await Promise.all([redisConnection.quit(), redisWorkerConnection.quit()]);
   process.exit(0);
-});
+}
+
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+process.on("SIGINT", () => gracefulShutdown("SIGINT"));

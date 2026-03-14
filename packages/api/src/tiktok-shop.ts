@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+const FETCH_TIMEOUT_MS = 15_000;
+
 const tokenResponseSchema = z.object({
   access_token: z.string(),
   refresh_token: z.string(),
@@ -30,6 +32,7 @@ export async function exchangeCodeForTokens(input: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
     body,
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
   });
 
   const json = (await response.json()) as unknown;
