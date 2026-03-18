@@ -16,3 +16,5 @@ tiktok-sdk/node_modules
 
 # PNPM
 .pnpm-store
+.vercel
+.env*.local
