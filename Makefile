@@ -29,7 +29,7 @@ install:
 # Build de todos os pacotes na ordem correta
 build:
 	@echo "🏗️  Construindo pacotes..."
-	pnpm run build --recursive
+	pnpm run build
 
 # Setup completo: Corrige permissões, limpa, instala e gera banco
 setup: fix-perms clean install db-generate
@@ -38,14 +38,14 @@ setup: fix-perms clean install db-generate
 # Gerar o cliente do banco de dados (Prisma)
 db-generate:
 	@echo "🗄️  Gerando cliente do banco de dados..."
-	pnpm run db:generate --filter @neomello/db
+	pnpm run db:generate
 
 # Atalhos para desenvolvimento
 dev-api:
-	pnpm run dev --filter @neomello/api
+	pnpm --filter @neomello/api run dev
 
 dev-worker:
-	pnpm run dev --filter @neomello/worker
+	pnpm --filter @neomello/worker run dev
 
 dev-dashboard:
-	pnpm run dev --filter @neomello/dashboard
+	pnpm --filter @neomello/dashboard run dev

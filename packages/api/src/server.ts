@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import fastify from "fastify";
 import sensible from "@fastify/sensible";
