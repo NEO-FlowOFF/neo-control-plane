@@ -1,6 +1,6 @@
 {
-  "buildCommand": "cd packages/dashboard && npm run build",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "pnpm run db:generate && cd packages/dashboard && npx vite build",
   "outputDirectory": "packages/dashboard/dist",
-  "framework": "vite",
   "installCommand": "pnpm install"
 }
