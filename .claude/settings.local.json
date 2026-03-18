@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(jq \".[] | select\\(.severity==\"\"error\"\"\\) | .message\")",
+      "Bash(npm run:*)",
+      "Bash(npm install:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm build:*)",
+      "Bash(git add:*)",
+      "Bash(git restore:*)",
+      "Bash(git commit -m \"fix: remove explicit engineType from Prisma client generator to resolve adapter requirement:*)",
+      "Bash(git push:*)",
+      "Bash(git commit -m \"fix: use binary engineType for Prisma client generator to support Node.js without adapter requirement:*)",
+      "Bash(pnpm remove:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm db:generate)",
+      "Bash(git commit -m \"fix: downgrade to Prisma 6.x to resolve engine type compatibility issue:*)"
+    ]
+  }
+}
