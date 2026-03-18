@@ -6,9 +6,9 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces --if-present",
-    "check": "npm run build --workspace @neomello/db && npm run build --workspace @neomello/tiktok-sdk && npm run check --workspaces --if-present",
-    "db:generate": "npm run db:generate --workspace @neomello/db",
-    "db:validate": "npm run db:validate --workspace @neomello/db"
+    "build": "pnpm --recursive run build",
+    "check": "pnpm --filter @neomello/db run build && pnpm --filter @neomello/tiktok-sdk run build && pnpm --recursive run check",
+    "db:generate": "pnpm --filter @neomello/db run db:generate",
+    "db:validate": "pnpm --filter @neomello/db run db:validate"
   }
 }

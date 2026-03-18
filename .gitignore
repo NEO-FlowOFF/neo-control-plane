@@ -12,3 +12,7 @@ packages/db/generated
 
 # Workspace specific node_modules
 packages/*/node_modules
+tiktok-sdk/node_modules
+
+# PNPM
+.pnpm-store

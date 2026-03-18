@@ -12,8 +12,9 @@
     "start": "node dist/main.js"
   },
   "dependencies": {
-    "@neomello/db": "*",
-    "@neomello/tiktok-sdk": "*",
+    "@neomello/db": "workspace:*",
+    "@neomello/tiktok-sdk": "workspace:*",
+    "@neomello/intelligence": "workspace:*",
     "bullmq": "^5.63.1",
     "fast-xml-parser": "^5.4.2",
     "ioredis": "5.9.3",

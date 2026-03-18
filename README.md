@@ -1,41 +1,134 @@
-# Neoflowoff TikTok Shop Platform
+<!-- markdownlint-disable MD003 MD007 MD013 MD022 MD023 MD025 MD029 MD032 MD033 MD034 -->
 
-Plataforma unificada da **FlowOff** (`FLOWOFF MARKETING E ASSESSORIA DIGITAL LTDA - ME`) para gerenciamento e automação de múltiplos vendedores no ecossistema TikTok Shop.
+```text
+========================================
+   NΞØ FLOWOFF · TIKTOK PLATFORM
+========================================
+```
 
-## 🏢 Contexto Administrativo
-- **Empresa:** FlowOff Marketing e Assessoria Digital
-- **CNPJ:** `43.376.355/0001-92`
-- **Papel:** Service Provider (Agência/Admin) para gestão de vendedores.
+Motor de automação inteligente para TikTok Sellers,
+impulsionado pelo Neural Core do NΞØ Protocol.
 
----
+> **Versão:** v1.0.0-flowoff  
+> **Licença:** MIT  
+> **Ambiente:** Monorepo PNPM
 
-## 🏗️ Estrutura Multi-Seller
+────────────────────────────────────────
 
-O projeto separa o "motor" das configurações de cada cliente para permitir escala rápida da equipe de vendas:
+## 🎯 O que é o NEO FlowOFF?
 
-- **`packages/`**: O Core da plataforma (Código Compartilhado).
-  - `@neomello/db`: Prisma 7, criptografia de tokens e controle de estado.
-  - `@neomello/tiktok-sdk`: Cliente de API TikTok Shop.
-  - `@neomello/api`: OAuth, Webhooks e endpoints de gerenciamento.
-  - `@neomello/worker`: Automações, refresh de tokens e jobs assíncronos.
-- **`accounts/`**: Configurações e identidades de cada vendedor (Instâncias).
-  - `accounts/julia-jtt-tiktok/`: Instância inicial ativa.
+O ecossistema definitivo para **TikTok Sellers** que buscam escala,
+consistência e alta conversão via inteligência neural automatizada.
 
----
+```text
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+┃ CAPACIDADES DA PLATAFORMA
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+┃
+┃ 🤖 Inteligência Neural
+┃    └─ Conteúdo otimizado GPT-4 Turbo
+┃       via @neomello/intelligence
+┃
+┃ ⚙️ Automação de Fluxo (Flow)
+┃    └─ Sincronização via Webhook
+┃       e fila de postagem automática
+┃
+┃ 📊 Dashboard Multi-Store
+┃    └─ Gestão centralizada para
+┃       múltiplas contas de sellers
+┃
+┃ 🛡️ Self-Healing SDK
+┃    └─ Atualização automática de tokens
+┃       via @neomello/tiktok-sdk
+┃
+┃ 🏗️ Infraestrutura Escalável
+┃    └─ BullMQ + Redis para alto
+┃       volume de processamento
+┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
 
-## � Fluxo de Operação
-Para detalhes de configuração de infraestrutura, variáveis de ambiente e comandos de build, consulte o guia técnico:
+────────────────────────────────────────
 
-� **[SETUP.md](./SETUP.md)**
+## 🛠 Início Rápido
 
-1. **Autorização**: Agência gera URL de autorização para o vendedor.
-2. **Sincronização**: Troca de chaves e armazenamento seguro.
-3. **Automação**: O motor processa inventário, anúncios e webhooks em tempo real.
+```bash
+# 1. Setup do Ambiente (Corrige permissões & Instala)
+make setup
 
----
+# 2. Gerar Cliente do Banco (Prisma v7)
+pnpm run db:generate
 
-## 🚀 Expansão da Equipe
-Para adicionar um novo vendedor, siga o padrão de diretórios em `accounts/` e utilize o `workspaceId` para isolamento de dados.
+# 3. Build de todos os pacotes
+make build
 
----
-*Mantido por Neomello para FlowOff Assessoria Digital.*
+# 4. Iniciar Desenvolvimento
+make dev-worker   # Inicia o Worker de IA
+make dev-api      # Inicia a API Backend
+```
+
+> Documentação completa → **[BLUEPRINT_ROADMAP.md](./docs/BLUEPRINT_ROADMAP.md)**
+
+────────────────────────────────────────
+
+## 📂 Estrutura do Repositório
+
+```text
+neoflowoff-tiktok/
+├── packages/
+│   ├── api/            Backend (Fastify)
+│   ├── worker/         Processador de Tarefas (BullMQ)
+│   ├── db/             Camada de Dados (Prisma v7)
+│   ├── intelligence/   Motor Neural de IA
+│   └── dashboard/      Frontend (Vite/Vue)
+├── tiktok-sdk/         Integração API TikTok
+├── members/            Configurações de Sellers
+└── docs/               Documentação da Plataforma
+```
+
+────────────────────────────────────────
+
+## 🗺️ Roadmap: O Futuro dos Nossos Membros
+
+```text
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+┃ FASE          STATUS      OBJETIVO
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+┃ 1. Estabilidade [OK]      PNPM + Prisma v7
+┃ 2. IA Core      [ATIVO]   Legendas Neurais
+┃ 3. Automação    [PENDENTE] Fluxo Auto-Post
+┃ 4. Tendências   [Q2 2026]  Análise de Mercado
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+────────────────────────────────────────
+
+## ⚖️ Autoria & Jurídico
+
+- **Arquitetura & Liderança:**
+  NΞØ MELLØ
+- **Proteção de IP:**
+  Toda a arquitetura e código originais
+  são Propriedade Intelectual do NΞØ Protocol.
+
+────────────────────────────────────────
+```text
+▓▓▓ NΞØ MELLØ
+────────────────────────────────────────
+Arquiteto Core · NΞØ Protocol
+neo@neoprotocol.space
+
+"Code is law. Expand until
+silence becomes structure."
+────────────────────────────────────────
+```
+```text
+      ▄                                                                                  █                        
+  ▄██▄                         
+ █  █ █░    
+ █ █░ █  
+  ▀██▀  
+  ▀░
+  
+NΞØ PROTOCOL
+```

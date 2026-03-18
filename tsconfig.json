@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@neomello/db": ["packages/db/src"],
+      "@neomello/api": ["packages/api/src"],
+      "@neomello/worker": ["packages/worker/src"],
+      "@neomello/intelligence": ["packages/neo-intelligence/src"],
+      "@neomello/tiktok-sdk": ["tiktok-sdk/src"]
+    }
+  },
+  "include": ["packages/**/*", "tiktok-sdk/**/*"]
+}

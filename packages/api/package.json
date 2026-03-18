@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@fastify/sensible": "^6.0.4",
-    "@neomello/db": "*",
+    "@neomello/db": "workspace:*",
     "fastify": "^5.6.1",
     "fastify-raw-body": "^5.0.0",
     "zod": "^4.3.6"
