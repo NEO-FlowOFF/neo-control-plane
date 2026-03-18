@@ -9,6 +9,7 @@ import {
   markWebhookEventDead,
   markWebhookEventDone,
   revokeSocialAccountByShopId,
+  prisma,
 } from "@neomello/db";
 import {
   fetchPlatformAnnouncements,
@@ -110,40 +111,100 @@ export async function handleWebhookProjectorJob(
     return;
   }
 
-  const webhookPayload = event.rawPayload as WebhookPayload;
+  const webhookPayload = event.rawPayload as any;
 
-  if (webhookPayload.type === config.TIKTOK_SHOP_AUTH_REVOKED_EVENT && webhookPayload.shop_id) {
-    await revokeSocialAccountByShopId(webhookPayload.shop_id);
-    await markWebhookEventDone(event.id);
-    return;
-  }
+  // Destructure tiktok standard payload wrapped inside 'data' or top-level 'type'
+  const eventType = Number(webhookPayload.type);
+  const data = webhookPayload.data ?? {};
 
-  const skuList = webhookPayload.data?.sku_list ?? [];
+  // Initialize or fetch the CreatorStats row
+  try {
+    switch (eventType) {
+      case 17: {
+        // Shoppable Content Posting
+        // action type can be ADD, UPDATE, REMOVE. We increment if ADD.
+        if (data.event?.type === "ADD") {
+           await prisma.creatorStats.upsert({
+              where: { socialAccountId: account.id },
+              create: { socialAccountId: account.id, totalPosts: 1 },
+              update: { totalPosts: { increment: 1 }, lastSyncAt: new Date() }
+           });
+        }
+        break;
+      }
 
-  for (const sku of skuList) {
-    if (!sku.sku_id || typeof sku.quantity !== "number") {
-      continue;
+      case 20: {
+        // Creator Deauthorization 
+        await revokeSocialAccountByShopId(account.shopId);
+        await prisma.complianceAlert.create({
+          data: {
+             socialAccountId: account.id,
+             type: "DEAUTHORIZED",
+             severity: "HIGH",
+             message: "TikTok App Authorization was revoked by the creator.",
+          }
+        });
+        break;
+      }
+
+      case 55:
+      case 59: {
+        // Shoppable Video Precheck Result
+        await prisma.complianceAlert.create({
+           data: {
+              socialAccountId: account.id,
+              type: "VIDEO_REJECTED",
+              severity: "MEDIUM",
+              message: `Video Precheck generated an alert. Status: ${JSON.stringify(data.status)}`,
+           }
+        });
+        await prisma.creatorStats.update({
+           where: { socialAccountId: account.id },
+           data: { activeAlerts: { increment: 1 } }
+        });
+        break;
+      }
+
+      case 1: 
+      case 2: {
+         // Order Status Change (Example Payment Completed)
+         // Assuming data contains GMV and orderId
+         if (data.status === "AWAITING_SHIPMENT" || data.status === "COMPLETED") {
+             const gmv = Number(data.payment_amount ?? 0);
+             
+             await prisma.orderSyncLog.upsert({
+                where: { orderId: data.order_id },
+                create: {
+                   workspaceId: account.workspaceId,
+                   socialAccountId: account.id,
+                   orderId: data.order_id,
+                   status: data.status,
+                   gmv,
+                   purchasedAt: new Date(Number(webhookPayload.timestamp) * 1000)
+                },
+                update: { status: data.status, gmv }
+             });
+
+             // Update Creator GMV
+             await prisma.creatorStats.upsert({
+               where: { socialAccountId: account.id },
+               create: { socialAccountId: account.id, totalSalesVolume: gmv },
+               update: { totalSalesVolume: { increment: gmv } }
+             });
+         }
+         break;
+      }
+      
+      default:
+         console.log(`Unhandled Webhook Type from TikTok: ${eventType}`);
     }
+    
+    await markWebhookEventDone(event.id);
 
-    const jobData: InventoryPublisherJobData = {
-      socialAccountId: account.id,
-      skuId: sku.sku_id,
-      quantity: sku.quantity,
-      ...(sku.warehouse_id ? { warehouseId: sku.warehouse_id } : {}),
-    };
-
-    await inventoryPublisherQueue.add("publish", jobData, {
-      jobId: `${event.id}:${sku.sku_id}`,
-      removeOnComplete: true,
-      attempts: 5,
-      backoff: {
-        type: "exponential",
-        delay: 5000,
-      },
-    });
+  } catch (error) {
+    console.error("Failed to project webhook:", error);
+    await markWebhookEventDead(event.id, "PROJECTION_FAILED");
   }
-
-  await markWebhookEventDone(event.id);
 }
 
 export async function handleInventoryPublisherJob(

@@ -31,6 +31,7 @@ model Workspace {
 
   socialAccounts SocialAccount[]
   campaigns      Campaign[]
+  orderSyncLogs  OrderSyncLog[]
 }
 
 model SocialAccount {
@@ -57,6 +58,11 @@ model SocialAccount {
 
   campaigns        Campaign[]
   webhookEvents    WebhookEventInbox[]
+
+  // Real-time Dashboard Specifics
+  creatorStats     CreatorStats?
+  complianceAlerts ComplianceAlert[]
+  orderSyncLogs    OrderSyncLog[]
 
   @@unique([provider, providerId])
   @@index([workspaceId, status])
@@ -112,4 +118,59 @@ model WebhookEventInbox {
 
   @@index([status, receivedAt])
   @@index([socialAccountId, status])
+}
+
+model CreatorStats {
+  id               String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  socialAccountId  String        @unique @db.Uuid
+  socialAccount    SocialAccount @relation(fields: [socialAccountId], references: [id], onDelete: Cascade)
+
+  // Ranking & Monitor Metrics
+  totalPosts       Int           @default(0)
+  totalViews       Int           @default(0)
+  totalSalesVolume Decimal       @default(0) @db.Decimal(15, 2)
+  performanceScore Float         @default(0.0)
+
+  // Agency (Health/Compliance)
+  activeAlerts     Int           @default(0)
+  lastSyncAt       DateTime      @default(now())
+
+  updatedAt        DateTime      @updatedAt
+}
+
+model OrderSyncLog {
+  id              String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  workspaceId     String         @db.Uuid
+  workspace       Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  
+  socialAccountId String?        @db.Uuid
+  socialAccount   SocialAccount? @relation(fields: [socialAccountId], references: [id], onDelete: SetNull)
+
+  orderId         String         @unique
+  status          String
+  gmv             Decimal        @default(0) @db.Decimal(15, 2)
+  currency        String         @default("BRL")
+
+  purchasedAt     DateTime
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([workspaceId, status])
+  @@index([socialAccountId, status])
+}
+
+model ComplianceAlert {
+  id              String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  socialAccountId String        @db.Uuid
+  socialAccount   SocialAccount @relation(fields: [socialAccountId], references: [id], onDelete: Cascade)
+
+  type            String        // Ex: "DEAUTHORIZED", "SHADOWBAN", "VIDEO_REJECTED"
+  severity        String        // Ex: "HIGH", "MEDIUM", "LOW"
+  message         String        @db.Text
+  isResolved      Boolean       @default(false)
+
+  createdAt       DateTime      @default(now())
+  resolvedAt      DateTime?
+
+  @@index([socialAccountId, isResolved])
 }

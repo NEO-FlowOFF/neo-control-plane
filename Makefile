@@ -1,6 +1,6 @@
 # NΞØ FlowOFF TikTok Platform - Makefile
 
-.PHONY: all install build dev clean db-generate setup fix-perms
+.PHONY: all install build dev clean db-generate setup fix-perms check
 
 all: setup build
 
@@ -18,6 +18,7 @@ clean:
 	rm -rf node_modules
 	rm -rf packages/*/node_modules
 	rm -rf packages/*/dist
+	rm -rf packages/db/generated
 	rm -rf tiktok-sdk/node_modules
 	rm -rf tiktok-sdk/dist
 
@@ -25,6 +26,11 @@ clean:
 install:
 	@echo "📦 Instalando dependências..."
 	pnpm install --no-frozen-lockfile
+
+# Verificação de tipos em todo o projeto
+check:
+	@echo "🔍 Verificando integridade do código (Type Check)..."
+	pnpm run check
 
 # Build de todos os pacotes na ordem correta
 build:
@@ -49,3 +55,6 @@ dev-worker:
 
 dev-dashboard:
 	pnpm --filter @neomello/dashboard run dev
+
+dev-intelligence:
+	pnpm --filter @neomello/intelligence run dev

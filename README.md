@@ -66,22 +66,16 @@ Blueprint detalhado de presença digital para o seu primeiro mês, maximizando s
 
 ## 🛠 Início Rápido
 
+Para começar rapidamente com o ambiente técnico e comandos do sistema:
+
 ```bash
-# 1. Setup do Ambiente (Corrige permissões & Instala)
-make setup
-
-# 2. Gerar Cliente do Banco (Prisma v7)
-pnpm run db:generate
-
-# 3. Build de todos os pacotes
-make build
-
-# 4. Iniciar Desenvolvimento
-make dev-worker   # Inicia o Worker de IA
-make dev-api      # Inicia a API Backend
+make setup      # Prepara todo o ambiente (recomendado)
+make build      # Constrói todos os pacotes
+make check      # Verifica erros de código
 ```
 
-> Documentação completa → **[BLUEPRINT_ROADMAP.md](./docs/BLUEPRINT_ROADMAP.md)**
+> ⚙️ **Instruções Técnicas Avançadas:**  
+> Consulte o guia detalhado → **[SETUP.md](./SETUP.md)**
 
 ────────────────────────────────────────
 
