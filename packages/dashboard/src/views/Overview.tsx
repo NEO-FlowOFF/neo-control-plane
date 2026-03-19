@@ -1,10 +1,18 @@
+import { useEffect, useState } from 'react'
 import {
   Activity,
-  AlertCircle
+  AlertCircle,
+  Link2,
+  Server,
+  ShieldCheck,
+  ShieldX
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Card } from '../components/Card'
 import tiktokPartnerBadge from '../assets/tiktok-partner-seller.svg'
+import { apiBaseUrl, fetchApiHealth } from '../lib/api'
+
+type ApiStatus = 'checking' | 'online' | 'offline'
 
 export default function Overview() {
   const SELLERS_LIVE = [
@@ -12,6 +20,60 @@ export default function Overview() {
     { name: 'Beta Store BR', rating: '5.0', itemsSold: '8k+', joined: '25 min ago' },
     { name: 'Charlie Imports', rating: '4.7', itemsSold: '3k+', joined: '1 hr ago' },
   ]
+  const [apiStatus, setApiStatus] = useState<ApiStatus>('checking')
+  const [apiStatusDetail, setApiStatusDetail] = useState('Executando handshake com o backend')
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    setApiStatus('checking')
+    setApiStatusDetail('Executando handshake com o backend')
+
+    fetchApiHealth(controller.signal)
+      .then(() => {
+        setApiStatus('online')
+        setApiStatusDetail('Backend respondeu /health e está operacional')
+      })
+      .catch((error: unknown) => {
+        if (controller.signal.aborted) {
+          return
+        }
+
+        const message =
+          error instanceof Error ? error.message : 'Falha desconhecida ao consultar a API'
+
+        setApiStatus('offline')
+        setApiStatusDetail(message)
+      })
+
+    return () => {
+      controller.abort()
+    }
+  }, [])
+
+  const statusConfig = {
+    checking: {
+      badgeClassName: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+      dotClassName: 'bg-amber-400',
+      label: 'Sync em andamento',
+      Icon: Server,
+    },
+    online: {
+      badgeClassName: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+      dotClassName: 'bg-emerald-400',
+      label: 'API conectada',
+      Icon: ShieldCheck,
+    },
+    offline: {
+      badgeClassName: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
+      dotClassName: 'bg-rose-400',
+      label: 'API indisponível',
+      Icon: ShieldX,
+    },
+  } as const
+
+  const currentStatus = statusConfig[apiStatus]
+  const StatusIcon = currentStatus.Icon
 
   return (
     <div className="space-y-6">
@@ -91,8 +153,36 @@ export default function Overview() {
       {/* Grid Inferior: Eligibility e Partner Status */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
+        <Card variant="glass" className="overflow-hidden p-6 border-white/[0.05]">
+          <div className="flex items-start justify-between gap-4 mb-5">
+            <div>
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-2">API Link State</p>
+              <h3 className="text-2xl font-black text-white italic tracking-tighter">Dashboard ↔ Backend</h3>
+            </div>
+            <div className={`px-3 py-1.5 rounded-full border text-[9px] font-black uppercase tracking-[0.25em] ${currentStatus.badgeClassName}`}>
+              {currentStatus.label}
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className={`w-2.5 h-2.5 rounded-full shadow-[0_0_14px_rgba(255,255,255,0.25)] ${currentStatus.dotClassName}`}></div>
+              <StatusIcon size={16} className="text-white/80" />
+              <span className="text-sm text-gray-200 font-semibold">{apiStatusDetail}</span>
+            </div>
+
+            <div className="rounded-2xl border border-white/5 bg-black/20 p-4 space-y-3">
+              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.25em] text-gray-500">
+                <Link2 size={12} />
+                Endpoint ativo
+              </div>
+              <p className="text-xs text-acqua-400 break-all font-mono">{apiBaseUrl}/health</p>
+            </div>
+          </div>
+        </Card>
+
         {/* FAQ Eligibility */}
-        <Card variant="glass" className="md:col-span-2 overflow-hidden p-6 border-white/[0.05]">
+        <Card variant="glass" className="md:col-span-1 overflow-hidden p-6 border-white/[0.05]">
           <h3 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4">Roadmap: Você se qualifica?</h3>
           <div className="grid grid-cols-2 gap-4 text-sm font-semibold">
             <div className="flex items-start gap-2 text-white">

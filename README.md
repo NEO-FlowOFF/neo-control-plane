@@ -1,5 +1,6 @@
 <!-- markdownlint-disable MD003 MD007 MD013 MD022 MD023 MD025 MD029 MD032 MD033 MD034 -->
-[<img src="https://img.shields.io/badge/TikTok-ACESSAR_|_CLIQUE_AQUI-FFOFOF?style=for-the-badge&logo=tiktok&logoColor=white&labelColor=FF0050" />](https://www.tiktok.com/t/ZS9d9c7VthG56-A80eX/) 
+
+[<img src="https://img.shields.io/badge/TikTok-ACESSAR_|_CLIQUE_AQUI-FFOFOF?style=for-the-badge&logo=tiktok&logoColor=white&labelColor=FF0050" />](https://www.tiktok.com/t/ZS9d9c7VthG56-A80eX/)
 
 ```text
 ========================================
@@ -15,11 +16,12 @@ impulsionado pelo Neural Core do NΞØ Protocol.
 > **Ambiente:** Monorepo pnpm
 
 ──────────────────────────++++++
+
 ## NEØ TIKTOK SHOP
 
 O ecossistema definitivo para **TikTok Sellers** que buscam escala,
 consistência e alta conversão via inteligência neural automatizada.
-Ao ingressar no ecossistema, você recebe acesso 
+Ao ingressar no ecossistema, você recebe acesso
 ao arsenal projetado para dominar o nicho de TikTok Shop:
 
 ```text
@@ -55,7 +57,7 @@ ao arsenal projetado para dominar o nicho de TikTok Shop:
 ────────────────────────────────────────
 
 ```
-### VANTAGENS EXCLUSIVAS PARA MEMBROS 
+### VANTAGENS EXCLUSIVAS PARA MEMBROS
 
 ······································································
 ** ENTRADA E ESTRUTURA **
@@ -97,11 +99,10 @@ ao arsenal projetado para dominar o nicho de TikTok Shop:
   • Independência progressiva de plataformas isoladas
 
 ······································································
-### ACESSE AGORA E COMECE A VENDER! 
+### ACESSE AGORA E COMECE A VENDER!
 ```
+
 ────────────────────────────────────────
-
-
 
 > ⚙️ **Instruções Técnicas:**  
 > Consulte o guia detalhado → **[SETUP.md](./SETUP.md)**
@@ -114,17 +115,28 @@ ao arsenal projetado para dominar o nicho de TikTok Shop:
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ┃ FASE          STATUS      OBJETIVO
 ┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-┃ 1. Estabilidade [OK]      PNPM + Prisma v7
+┃ 1. Estabilidade [OK]      PNPM + Prisma v6
 ┃ 2. IA Core      [ATIVO]   Legendas Neurais
 ┃ 3. Automação    [PENDENTE] Fluxo Auto-Post
 ┃ 4. Tendências   [Q2 2026]  Análise de Mercado
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
-```
+
+## 🔐 Variáveis Operacionais
+
+As variáveis mínimas da plataforma vivem no arquivo `.env.example`.
+O `dashboard` lê `VITE_API_BASE_URL` a partir da raiz do monorepo via `envDir` do Vite.
+
+- `DATABASE_URL`: conexão principal com PostgreSQL.
+- `DB_CONNECT_TIMEOUT_MS`: timeout de bootstrap da API para falhar rápido se o banco não responder.
+- `API_BASE_URL`: URL pública usada pelo callback OAuth.
+- `TIKTOK_SHOP_APP_KEY` e `TIKTOK_SHOP_APP_SECRET`: credenciais da integração TikTok Shop.
+- `TIKTOK_WEBHOOK_SECRET`, `TIKTOK_WEBHOOK_SIGNATURE_HEADER` e `TIKTOK_WEBHOOK_TIMESTAMP_HEADER`: validação de assinatura dos webhooks.
+- `VITE_API_BASE_URL`: endpoint base usado pelo dashboard para consultar `/health` e demais rotas da API.
+
 ────────────────────────────────────────
 
 ## ⚖️ Autoria & Licença
-
 
 ▓▓▓ NΞØ MELLØ
 ────────────────────────────────────────
@@ -136,20 +148,23 @@ neo@neoprotocol.space
   são Propriedade Intelectual do NΞØ Protocol.
 
 ────────────────────────────────────────
+
 ```
 
 
 ────────────────++++++++
 
 ```
+
 ```text
-      ▄░                        
-  ▄██▄                         
- █  █ █░    
- █ █░ █  
-  ▀██▀  
+      ▄░
+  ▄██▄
+ █  █ █░
+ █ █░ █
+  ▀██▀
   ▀░
-  
+
 NΞØ PROTOCOL
 ```
+
 "Code is law. Expand until silence becomes structure."
