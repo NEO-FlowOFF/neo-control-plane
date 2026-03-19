@@ -61,9 +61,9 @@ neoflowoff-tiktok/
 ├── packages/
 │   ├── api/            Backend (Fastify)
 │   ├── worker/         Processador de Tarefas (BullMQ)
-│   ├── db/             Camada de Dados (Prisma v7)
+│   ├── db/             Camada de Dados (Prisma v6)
 │   ├── intelligence/   Motor Neural de IA
-│   └── dashboard/      Frontend (Vite/Vue)
+│   └── dashboard/      Frontend (Vite/React)
 ├── tiktok-sdk/         Integração API TikTok
 ├── members/            Configurações de Sellers
 └── docs/               Documentação da Plataforma
@@ -79,7 +79,6 @@ Para rodar os módulos individualmente durante o desenvolvimento:
 | `make dev-worker`       | Inicia o processador de filas BullMQ.       |
 | `make dev-dashboard`    | Inicia o Dashboard (Vite/React).            |
 | `make dev-intelligence` | Inicia o motor de IA em modo de compilação. |
-
 
 ---
 
@@ -111,6 +110,7 @@ make clean      # Remove todos os node_modules e artefatos de build
 ```
 
 ---
+
 ```text
 ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ┃ CAPACIDADES DA PLATAFORMA
@@ -138,5 +138,6 @@ make clean      # Remove todos os node_modules e artefatos de build
 ┃
 ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
+
 > [!NOTE]
 > Para detalhes sobre a visão estratégica e roadmap, consulte o [README.md](./README.md).
