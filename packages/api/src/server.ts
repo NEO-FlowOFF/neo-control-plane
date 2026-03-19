@@ -199,6 +199,16 @@ async function gracefulShutdown(signal: string) {
 process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
 process.on("SIGINT", () => gracefulShutdown("SIGINT"));
 
+// Initialize database connection
+try {
+  app.log.info("Attempting to connect to the database...");
+  await prisma.$queryRaw`SELECT 1`;
+  app.log.info("Database connection successful");
+} catch (error) {
+  app.log.error("Failed to connect to database:", error);
+  process.exit(1);
+}
+
 await app.listen({
   host: "0.0.0.0",
   port: config.PORT,
