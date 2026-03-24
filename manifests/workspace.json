@@ -1,0 +1,47 @@
+{
+  "workspaceName": "neoflowoff-tiktok-workspace",
+  "organization": "NEO-FlowOFF",
+  "localAggregatorFolder": "/Users/nettomello/CODIGOS/neoflowoff-tiktok",
+  "recommendedRepositoryName": "neoflowoff-tiktok",
+  "operationalMode": "transition-control-plane",
+  "packageManager": "pnpm",
+  "tracks": [
+    "repository manifests",
+    "integration manifests",
+    "workspace topology",
+    "modular transition status",
+    "cross-repo documentation",
+    "compatibility bridges",
+    "diagnostic scripts"
+  ],
+  "doesNotTrack": [
+    "runtime-heavy content assets inside Git history",
+    "final product ownership of extracted child repositories",
+    "Railway deployment state as source of truth for code boundaries"
+  ],
+  "canonicalSources": [
+    "README.md",
+    "AGENTS.md",
+    "WORKSPACE_STATUS.md",
+    "MODULAR_ARCHITECTURE.md",
+    "RAILWAY_WORKSPACE.md",
+    "manifests/repos.json",
+    "manifests/integrations.json"
+  ],
+  "childRepositoryPolicy": {
+    "captureChildCodeInRoot": false,
+    "treatRootAsMonorepo": false,
+    "productChangesMustHappenInChildRepo": true,
+    "crossRepoCoordinationMustHappenInRoot": true
+  },
+  "localConvention": {
+    "pnpmOnlyForNodeLayer": true,
+    "pythonLocalFirstForContentEngine": true,
+    "createPnpmWorkspaceForChildren": false
+  },
+  "documentPolicy": {
+    "docsMustDescribeRealExecution": true,
+    "statusMustMatchFilesystem": true,
+    "railwayMustBeDocumentedAsServiceWorkspace": true
+  }
+}

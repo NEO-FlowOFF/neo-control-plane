@@ -1,0 +1,67 @@
+{
+  "workspace": "neoflowoff-tiktok-workspace",
+  "organization": "NEO-FlowOFF",
+  "sources": [
+    "README.md",
+    "MODULAR_ARCHITECTURE.md",
+    "RAILWAY_WORKSPACE.md",
+    "local filesystem under /Users/nettomello/CODIGOS"
+  ],
+  "repos": [
+    {
+      "id": "neoflowoff-tiktok",
+      "localPath": ".",
+      "remote": null,
+      "role": "Transition Workspace / Control Plane",
+      "ownership": "workspace",
+      "status": "active-root",
+      "source": "README.md"
+    },
+    {
+      "id": "neo-content-landing",
+      "localPath": "../neo-content-landing",
+      "remote": null,
+      "role": "Public Landing / Acquisition Surface",
+      "ownership": "product",
+      "status": "planned",
+      "currentSourceOfTruth": "./packages/landing",
+      "source": "MODULAR_ARCHITECTURE.md"
+    },
+    {
+      "id": "neo-content-dashboard",
+      "localPath": "../neo-content-dashboard",
+      "remote": null,
+      "role": "Operational Dashboard / Internal Surface",
+      "ownership": "product",
+      "status": "planned",
+      "currentSourceOfTruth": "./packages/dashboard",
+      "source": "MODULAR_ARCHITECTURE.md"
+    },
+    {
+      "id": "neo-content-accounts",
+      "localPath": "../neo-content-accounts",
+      "remote": null,
+      "role": "Accounts Backend / OAuth / Webhooks / Jobs / Persistence",
+      "ownership": "product",
+      "status": "planned",
+      "currentSourceOfTruth": [
+        "./packages/api",
+        "./packages/db",
+        "./packages/worker",
+        "./packages/neo-intelligence",
+        "./tiktok-sdk"
+      ],
+      "source": "MODULAR_ARCHITECTURE.md"
+    },
+    {
+      "id": "neo-content-engine",
+      "localPath": "../neo-content-engine",
+      "remote": "https://github.com/NEO-FlowOFF/neo-content-engine.git",
+      "role": "Local-first Content Engine / Video Pipeline",
+      "ownership": "product",
+      "status": "extracted",
+      "currentSourceOfTruth": "../neo-content-engine",
+      "source": "filesystem + git remote"
+    }
+  ]
+}

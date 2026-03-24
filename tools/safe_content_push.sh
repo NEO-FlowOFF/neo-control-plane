@@ -19,18 +19,22 @@ if [[ "$BRANCH" == "main" || "$BRANCH" == "master" ]]; then
 fi
 
 SAFE_PATHS=(
-  "apps/content-engine"
   "docs/PIPELINE_NEO_TIKTOKSHOP.md"
   "docs/PIPELINE_NEO_TIKTOKSHOP_RUNBOOK.md"
   "tools/safe_content_push.sh"
-  "tools/clean_content_runtime.py"
+  "tools/content_engine_bridge.sh"
+  "manifests"
+  "WORKSPACE_STATUS.md"
+  "MODULAR_ARCHITECTURE.md"
+  "RAILWAY_WORKSPACE.md"
+  "AGENTS.md"
   "Makefile"
   "package.json"
   ".env.example"
   ".gitignore"
 )
 
-echo "Staging apenas arquivos do escopo content-engine..."
+echo "Staging apenas arquivos do escopo de transicao do content-engine..."
 git add -A -- "${SAFE_PATHS[@]}"
 
 if git diff --cached --quiet; then
@@ -56,14 +60,14 @@ echo "Validando conflitos e whitespace..."
 git diff --cached --check >/dev/null
 
 echo "Rodando sanity check python do content-engine..."
-if [[ -x "apps/content-engine/.venv/bin/python" ]]; then
-  apps/content-engine/.venv/bin/python -m py_compile \
-    apps/content-engine/scripts/mine_tiktok_shop.py \
-    apps/content-engine/scripts/run_neo_tiktokshop.py
+if [[ -x "../neo-content-engine/.venv/bin/python" ]]; then
+  ../neo-content-engine/.venv/bin/python -m py_compile \
+    ../neo-content-engine/scripts/mine_tiktok_shop.py \
+    ../neo-content-engine/scripts/run_neo_tiktokshop.py
 else
   python3 -m py_compile \
-    apps/content-engine/scripts/mine_tiktok_shop.py \
-    apps/content-engine/scripts/run_neo_tiktokshop.py
+    ../neo-content-engine/scripts/mine_tiktok_shop.py \
+    ../neo-content-engine/scripts/run_neo_tiktokshop.py
 fi
 
 if [[ "$DRY_RUN" == "1" ]]; then

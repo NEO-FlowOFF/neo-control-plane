@@ -1,0 +1,81 @@
+{
+  "workspace": "neoflowoff-tiktok-workspace",
+  "organization": "NEO-FlowOFF",
+  "sources": [
+    "RAILWAY_WORKSPACE.md",
+    "packages/dashboard/src/lib/api.ts",
+    "tools/content_engine_bridge.sh",
+    "../neo-content-engine/README.md",
+    "runtime behavior observed locally"
+  ],
+  "integrations": [
+    {
+      "id": "neo-content-dashboard__neo-content-accounts",
+      "producer": "neo-content-accounts",
+      "consumer": "neo-content-dashboard",
+      "contract": {
+        "type": "http-api",
+        "surface": "VITE_API_BASE_URL consumed by dashboard frontend"
+      },
+      "sharedResource": "API base URL",
+      "source": "packages/dashboard/src/lib/api.ts"
+    },
+    {
+      "id": "railway-postgres__neo-content-accounts",
+      "producer": "railway-postgres",
+      "consumer": "neo-content-accounts",
+      "contract": {
+        "type": "database",
+        "surface": "DATABASE_URL"
+      },
+      "sharedResource": "Postgres",
+      "source": "RAILWAY_WORKSPACE.md"
+    },
+    {
+      "id": "railway-redis__neo-content-accounts",
+      "producer": "railway-redis",
+      "consumer": "neo-content-accounts",
+      "contract": {
+        "type": "queue-backend",
+        "surface": "REDIS_URL"
+      },
+      "sharedResource": "Redis",
+      "source": "RAILWAY_WORKSPACE.md"
+    },
+    {
+      "id": "neoflowoff-tiktok__neo-content-engine",
+      "producer": "neoflowoff-tiktok",
+      "consumer": "neo-content-engine",
+      "contract": {
+        "type": "local-command-bridge",
+        "surface": "make content-* and pnpm run content:*"
+      },
+      "sharedResource": "compatibility commands",
+      "source": "tools/content_engine_bridge.sh"
+    },
+    {
+      "id": "neo-content-engine__minio-compatible-storage",
+      "producer": "neo-content-engine",
+      "consumer": "minio-compatible-storage",
+      "contract": {
+        "type": "object-storage",
+        "surface": "MINIO_ENDPOINT, MINIO_PUBLIC_BASE_URL, MINIO_BUCKET"
+      },
+      "sharedResource": "content assets publication",
+      "scope": "local-first or external storage",
+      "source": "../neo-content-engine/README.md"
+    },
+    {
+      "id": "neo-content-landing__neo-content-dashboard",
+      "producer": "neo-content-landing",
+      "consumer": "neo-content-dashboard",
+      "contract": {
+        "type": "navigational-linkage",
+        "surface": "public-to-internal entry flow"
+      },
+      "sharedResource": "brand and user journey",
+      "scope": "expected modular relation",
+      "source": "README.md"
+    }
+  ]
+}

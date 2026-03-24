@@ -5,13 +5,17 @@ import argparse
 from pathlib import Path
 
 
+ROOT_DIR = Path(__file__).resolve().parent.parent
+DEFAULT_RUNTIME_DIR = ROOT_DIR.parent / "neo-content-engine" / "runtime"
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Limpa artefatos de runtime do content-engine."
     )
     parser.add_argument(
         "--runtime-dir",
-        default="apps/content-engine/runtime",
+        default=str(DEFAULT_RUNTIME_DIR),
         help="Diretorio runtime do content-engine",
     )
     parser.add_argument(
@@ -42,6 +46,10 @@ def should_keep(path: Path, keep_example: bool) -> bool:
 def main() -> int:
     args = parse_args()
     runtime = Path(args.runtime_dir).resolve()
+    if not runtime.exists():
+        print(f"runtime ausente: {runtime}")
+        print("esperado: repo irmao ../neo-content-engine")
+        return 1
     files = list_files(runtime)
     to_delete: list[Path] = []
     for path in files:
