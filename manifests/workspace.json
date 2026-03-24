@@ -1,7 +1,7 @@
 {
   "workspaceName": "neoflowoff-tiktok-workspace",
   "organization": "NEO-FlowOFF",
-  "localAggregatorFolder": "/Users/nettomello/CODIGOS/neoflowoff-tiktok",
+  "localAggregatorFolder": "./neoflowoff-tiktok",
   "recommendedRepositoryName": "neoflowoff-tiktok",
   "operationalMode": "transition-control-plane",
   "packageManager": "pnpm",
