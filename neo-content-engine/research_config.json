@@ -9,7 +9,7 @@
     "limit_products": 20,
     "source_row_limit_for_llm": 40,
     "min_confidence": 0.0,
-    "min_score": 0.45,
+    "min_score": 0.18,
     "min_commission_rate": 0.0,
     "min_sales_count": 0,
     "require_image_or_video": false,
@@ -42,7 +42,7 @@
     "tavily": true,
     "tiktok_api": {
       "enabled": true,
-      "mode": "creator",
+      "mode": "auto",
       "base_url": "https://open-api.tiktokglobalshop.com",
       "version": "202405",
       "page_size": 20,

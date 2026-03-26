@@ -18,11 +18,29 @@ Legado fora do fluxo oficial:
 
 ```bash
 make setup
-make mine
-make run -- --skip-upload --skip-openai
-make auto ARGS="--skip-openai"
-make research-auto
+make doctor
+make mine-real
+make run-real RUN_ARGS="--skip-upload"
+make now LIMIT_PRODUCTS=5 MAX_PRODUCTS=2 RUN_ARGS="--skip-upload"
+make minio-up
+make minio-bucket-private
+make minio-bucket-public
 ```
+
+Rota unica para usar agora:
+
+```bash
+make now LIMIT_PRODUCTS=5 MAX_PRODUCTS=2 RUN_ARGS="--skip-upload"
+```
+
+Leitura pratica:
+
+- `mine-real` pesquisa e gera a fila em `runtime/inputs/pending_products.csv`
+- `run-real` consome a fila e gera video e metadata
+- `now` executa `mine-real` e depois `run-real`
+- `doctor` verifica se o `.env` local tem as chaves criticas
+- `minio-bucket-private` mantem o bucket privado
+- `minio-bucket-public` abre leitura publica apenas por opt-in local
 
 Arquivos de configuracao declarativa:
 
@@ -98,6 +116,7 @@ O score final fica explicito em `research_config.json` e hoje considera:
 
 Criticos operacionais:
 
+- `sources.tiktok_api.mode=auto` tenta `seller` primeiro quando houver `TIKTOK_SHOP_CIPHER`, e cai para `creator` como fallback
 - `sources.tiktok_api.mode=creator` usa `affiliate_creator/.../open_collaborations/products/search`
 - `sources.tiktok_api.mode=seller` usa `affiliate_seller/.../open_collaborations/products/search` e exige `TIKTOK_SHOP_CIPHER`
 - o engine aceita `TIKTOK_SHOP_APP_KEY` e `TIKTOK_SHOP_APP_SECRET` como nomes canonicos, com fallback para aliases legacy

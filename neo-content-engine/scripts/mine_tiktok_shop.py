@@ -38,7 +38,7 @@ DEFAULT_RESEARCH_CONFIG = {
         "limit_products": 20,
         "source_row_limit_for_llm": 40,
         "min_confidence": 0.0,
-        "min_score": 0.45,
+        "min_score": 0.18,
         "min_commission_rate": 0.0,
         "min_sales_count": 0,
         "require_image_or_video": False,
@@ -71,7 +71,7 @@ DEFAULT_RESEARCH_CONFIG = {
         "tavily": True,
         "tiktok_api": {
             "enabled": True,
-            "mode": "creator",
+            "mode": "auto",
             "base_url": DEFAULT_TIKTOK_API_BASE_URL,
             "version": "202405",
             "page_size": 20,
@@ -312,11 +312,15 @@ def run_tavily_search(
     return gathered
 
 
+def compact_exception_message(exc: Exception) -> str:
+    return f"{type(exc).__name__}:{exc}"
+
+
 def normalize_tiktok_source_config(value: Any) -> dict[str, Any]:
     if isinstance(value, bool):
         return {
             "enabled": value,
-            "mode": "creator",
+            "mode": "auto",
             "base_url": DEFAULT_TIKTOK_API_BASE_URL,
             "version": "202405",
             "page_size": 20,
@@ -674,55 +678,76 @@ def run_tiktok_api_search(
     if not all([access_token, app_key, client_secret]):
         return [], "missing_credentials"
 
-    mode = str(source.get("mode", "creator")).strip().lower() or "creator"
+    mode = str(source.get("mode", "auto")).strip().lower() or "auto"
     version = str(source.get("version", "202405")).strip() or "202405"
     base_url = str(
         source.get("base_url") or os.getenv("TIKTOK_SHOP_API_BASE_URL", DEFAULT_TIKTOK_API_BASE_URL)
     ).strip()
     page_size = max(1, min(int(source.get("page_size", max_results_per_query)), max_results_per_query))
+    shop_cipher = first_env("TIKTOK_SHOP_CIPHER")
 
+    modes_to_try: list[tuple[str, str, str]] = []
     if mode == "seller":
-        shop_cipher = first_env("TIKTOK_SHOP_CIPHER")
         if not shop_cipher:
             return [], "missing_shop_cipher"
-        api_path = f"/affiliate_seller/{version}/open_collaborations/products/search"
+        modes_to_try.append(
+            ("seller", f"/affiliate_seller/{version}/open_collaborations/products/search", shop_cipher)
+        )
+    elif mode == "creator":
+        modes_to_try.append(
+            ("creator", f"/affiliate_creator/{version}/open_collaborations/products/search", "")
+        )
     else:
-        shop_cipher = ""
-        api_path = f"/affiliate_creator/{version}/open_collaborations/products/search"
+        if shop_cipher:
+            modes_to_try.append(
+                ("seller", f"/affiliate_seller/{version}/open_collaborations/products/search", shop_cipher)
+            )
+        modes_to_try.append(
+            ("creator", f"/affiliate_creator/{version}/open_collaborations/products/search", "")
+        )
 
     all_rows: list[dict[str, Any]] = []
     seen = set()
-    for query in queries:
-        query_params: dict[str, Any] = {
-            "app_key": app_key,
-            "timestamp": str(int(time.time())),
-            "page_size": str(page_size),
-        }
-        if shop_cipher:
-            query_params["shop_cipher"] = shop_cipher
-        body = build_tiktok_query_body(query, source)
+    attempts: list[str] = []
+    for mode_name, api_path, mode_shop_cipher in modes_to_try:
+        mode_rows: list[dict[str, Any]] = []
         try:
-            payload = tiktok_api_request(
-                api_path=api_path,
-                body=body,
-                query_params=query_params,
-                base_url=base_url,
-                access_token=access_token,
-                client_secret=client_secret,
-            )
-        except Exception as exc:
-            return all_rows, f"request_error:{exc}"
+            for query in queries:
+                query_params: dict[str, Any] = {
+                    "app_key": app_key,
+                    "timestamp": str(int(time.time())),
+                    "page_size": str(page_size),
+                }
+                if mode_shop_cipher:
+                    query_params["shop_cipher"] = mode_shop_cipher
+                body = build_tiktok_query_body(query, source)
+                payload = tiktok_api_request(
+                    api_path=api_path,
+                    body=body,
+                    query_params=query_params,
+                    base_url=base_url,
+                    access_token=access_token,
+                    client_secret=client_secret,
+                )
 
-        for node in iter_product_nodes(payload):
-            normalized = normalize_tiktok_product(node, query)
-            if normalized is None:
-                continue
-            dedupe_key = str(normalized.get("source_id") or normalized.get("url") or normalized.get("title"))
-            if not dedupe_key or dedupe_key in seen:
-                continue
-            seen.add(dedupe_key)
-            all_rows.append(normalized)
-    return all_rows, "ok"
+                for node in iter_product_nodes(payload):
+                    normalized = normalize_tiktok_product(node, query)
+                    if normalized is None:
+                        continue
+                    dedupe_key = str(
+                        normalized.get("source_id") or normalized.get("url") or normalized.get("title")
+                    )
+                    if not dedupe_key or dedupe_key in seen:
+                        continue
+                    seen.add(dedupe_key)
+                    mode_rows.append(normalized)
+            all_rows.extend(mode_rows)
+            return all_rows, f"ok:{mode_name}"
+        except Exception as exc:
+            attempts.append(f"{mode_name}=request_error:{compact_exception_message(exc)}")
+            continue
+
+    return all_rows, " | ".join(attempts) if attempts else "disabled"
 
 
 def llm_structured_products(
@@ -1091,10 +1116,13 @@ def main() -> int:
     tavily_key = os.getenv("TAVILY_API_KEY")
     if tavily_enabled:
         if tavily_key:
-            client = TavilyClient(api_key=tavily_key)
-            tavily_rows = run_tavily_search(client, queries, args.max_results_per_query)
-            tavily_status = "ok"
-            rows.extend(tavily_rows)
+            try:
+                client = TavilyClient(api_key=tavily_key)
+                tavily_rows = run_tavily_search(client, queries, args.max_results_per_query)
+                tavily_status = "ok"
+                rows.extend(tavily_rows)
+            except Exception as exc:
+                tavily_status = f"error:{compact_exception_message(exc)}"
         else:
             tavily_status = "missing_credentials"
 
@@ -1121,11 +1149,46 @@ def main() -> int:
         strict_openai=args.strict_openai,
     )
     products = enrich_products_from_sources(products, rows)
-    products = score_products(products, selection)
-    products = filter_products(products, selection)[: args.limit_products]
+    scored_products = score_products(products, selection)
+    filtered_products = filter_products(scored_products, selection)
+    products = filtered_products[: args.limit_products]
 
     if not products:
-        print(json.dumps({"ok": False, "error": "Sem produtos estruturados"}, ensure_ascii=False))
+        print(
+            json.dumps(
+                {
+                    "ok": False,
+                    "error": "Sem produtos estruturados",
+                    "rows_researched": len(rows),
+                    "rows_tiktok_api": len(tiktok_rows),
+                    "rows_tavily": len(tavily_rows),
+                    "tiktok_status": tiktok_status,
+                    "tavily_status": tavily_status,
+                    "llm_status": llm_status,
+                    "products_scored": len(scored_products),
+                    "products_filtered_out": max(0, len(scored_products) - len(filtered_products)),
+                    "selection": {
+                        "min_confidence": selection.get("min_confidence", 0.0),
+                        "min_score": selection.get("min_score", 0.0),
+                        "min_commission_rate": selection.get("min_commission_rate", 0.0),
+                        "min_sales_count": selection.get("min_sales_count", 0),
+                        "require_image_or_video": selection.get("require_image_or_video", False),
+                    },
+                    "top_candidates": [
+                        {
+                            "name": candidate.get("name", ""),
+                            "score": candidate.get("score", 0.0),
+                            "source_type": candidate.get("source_type", ""),
+                            "commission_rate": candidate.get("commission_rate", 0.0),
+                            "sales_count": candidate.get("sales_count", 0),
+                            "score_breakdown": candidate.get("score_breakdown", {}),
+                        }
+                        for candidate in scored_products[:5]
+                    ],
+                },
+                ensure_ascii=False,
+            )
+        )
         return 1
 
     output_csv = Path(args.output_csv).resolve()
