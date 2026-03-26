@@ -10,7 +10,7 @@ import {
 } from "@neomello/db";
 import { config } from "./config.js";
 import { decodeOAuthState, encodeOAuthState } from "./oauth-state.js";
-import { exchangeCodeForTokens } from "./tiktok-shop.js";
+import { exchangeCodeForTokens, fetchAuthorizedShops } from "./tiktok-shop.js";
 
 const app = fastify({
   logger: true,
@@ -60,11 +60,10 @@ app.get("/oauth/tiktok-shop/authorize", async (request) => {
 app.get("/oauth/tiktok-shop/callback", async (request) => {
   const query = request.query as Record<string, string | undefined>;
 
-  if (!query.code || !query.state) {
-    throw app.httpErrors.badRequest("code and state are required.");
+  if (!query.code) {
+    throw app.httpErrors.badRequest("code is required.");
   }
 
-  const state = decodeOAuthState(config.OAUTH_STATE_SECRET, query.state);
   const tokens = await exchangeCodeForTokens({
     tokenUrl: config.TIKTOK_SHOP_TOKEN_URL,
     appKey: config.TIKTOK_SHOP_APP_KEY,
@@ -73,6 +72,48 @@ app.get("/oauth/tiktok-shop/callback", async (request) => {
     redirectUri: config.TIKTOK_SHOP_REDIRECT_URI,
   });
 
+  if (!query.state) {
+    let shops: Awaited<ReturnType<typeof fetchAuthorizedShops>> = [];
+    let shopsFetchError = "";
+
+    try {
+      shops = await fetchAuthorizedShops({
+        apiBaseUrl: config.TIKTOK_SHOP_API_BASE_URL,
+        accessToken: tokens.access_token,
+        appKey: config.TIKTOK_SHOP_APP_KEY,
+        appSecret: config.TIKTOK_SHOP_APP_SECRET,
+      });
+    } catch (error) {
+      shopsFetchError =
+        error instanceof Error ? error.message : "Unknown authorized shops error";
+      app.log.warn(
+        { err: error, tokenPrefix: tokens.access_token.slice(0, 12) },
+        "TikTok authorized shops lookup failed after token exchange",
+      );
+    }
+
+    return {
+      ok: true,
+      mode: "seller_service_direct",
+      message:
+        "Authorization completed without OAuth state. Tokens were not persisted automatically. Use this payload to bind the shop manually or finish the stateful flow.",
+      accessToken: tokens.access_token,
+      refreshToken: tokens.refresh_token,
+      expiresIn: tokens.expires_in,
+      refreshExpiresIn: tokens.refresh_expires_in ?? null,
+      authorizedShopsStatus: shopsFetchError ? "error" : "ok",
+      authorizedShopsError: shopsFetchError || null,
+      shops: shops.map((shop) => ({
+        shopId: shop.id ? String(shop.id) : "",
+        shopCipher: shop.cipher ?? "",
+        shopCode: shop.code ?? "",
+        shopName: shop.name ?? "",
+        shopRegion: shop.region ?? "",
+      })),
+    };
+  }
+
+  const state = decodeOAuthState(config.OAUTH_STATE_SECRET, query.state);
   const tokenExpiresAt = new Date(Date.now() + tokens.expires_in * 1000);
   const refreshExpiresAt = tokens.refresh_expires_in
     ? new Date(Date.now() + tokens.refresh_expires_in * 1000)
