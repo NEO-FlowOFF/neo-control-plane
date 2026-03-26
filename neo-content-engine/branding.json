@@ -1,0 +1,15 @@
+{
+  "voice": "pt-BR-AntonioNeural",
+  "voice_options": [
+    "pt-BR-AntonioNeural",
+    "pt-BR-FranciscaNeural",
+    "pt-PT-DuarteNeural",
+    "pt-PT-RaquelNeural"
+  ],
+  "video": {
+    "background_color": "0x111827",
+    "hook_text_color": "0xFF2D9C",
+    "hook_border_color": "0x00E6FF",
+    "font_size": 72
+  }
+}
