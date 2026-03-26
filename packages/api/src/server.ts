@@ -73,12 +73,24 @@ app.get("/oauth/tiktok-shop/callback", async (request) => {
   });
 
   if (!query.state) {
-    const shops = await fetchAuthorizedShops({
-      apiBaseUrl: config.TIKTOK_SHOP_API_BASE_URL,
-      accessToken: tokens.access_token,
-      appKey: config.TIKTOK_SHOP_APP_KEY,
-      appSecret: config.TIKTOK_SHOP_APP_SECRET,
-    });
+    let shops: Awaited<ReturnType<typeof fetchAuthorizedShops>> = [];
+    let shopsFetchError = "";
+
+    try {
+      shops = await fetchAuthorizedShops({
+        apiBaseUrl: config.TIKTOK_SHOP_API_BASE_URL,
+        accessToken: tokens.access_token,
+        appKey: config.TIKTOK_SHOP_APP_KEY,
+        appSecret: config.TIKTOK_SHOP_APP_SECRET,
+      });
+    } catch (error) {
+      shopsFetchError =
+        error instanceof Error ? error.message : "Unknown authorized shops error";
+      app.log.warn(
+        { err: error, tokenPrefix: tokens.access_token.slice(0, 12) },
+        "TikTok authorized shops lookup failed after token exchange",
+      );
+    }
 
     return {
       ok: true,
@@ -89,6 +101,8 @@ app.get("/oauth/tiktok-shop/callback", async (request) => {
       refreshToken: tokens.refresh_token,
       expiresIn: tokens.expires_in,
       refreshExpiresIn: tokens.refresh_expires_in ?? null,
+      authorizedShopsStatus: shopsFetchError ? "error" : "ok",
+      authorizedShopsError: shopsFetchError || null,
       shops: shops.map((shop) => ({
         shopId: shop.id ? String(shop.id) : "",
         shopCipher: shop.cipher ?? "",
