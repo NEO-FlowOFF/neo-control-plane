@@ -1,0 +1,15 @@
+2026/03/26-08:39:32.788 467a7b Reusing MANIFEST /Users/nettomello/CODIGOS/neoflowoff-tiktok/chrome_session_tiktok/Default/IndexedDB/https_seller-br.tiktok.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/03/26-08:39:32.788 467a7b Recovering log #19
+2026/03/26-08:39:32.789 467a7b Reusing old log /Users/nettomello/CODIGOS/neoflowoff-tiktok/chrome_session_tiktok/Default/IndexedDB/https_seller-br.tiktok.com_0.indexeddb.leveldb/000019.log 
+2026/03/26-08:39:32.789 467a7b Delete type=2 #17
+2026/03/26-08:39:33.269 467a7f Level-0 table #24: started
+2026/03/26-08:39:33.270 467a7f Level-0 table #24: 23222 bytes OK
+2026/03/26-08:39:33.272 467a7f Delete type=0 #19
+2026/03/26-08:39:33.273 467a7b Manual compaction at level-0 from '\x00\x11\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x12\x00\x00\x00' @ 0 : 0; will stop at '\x00\x11\x00\x00\x05' @ 1841 : 1
+2026/03/26-08:39:33.273 467a7b Compacting 1@0 + 1@1 files
+2026/03/26-08:39:33.277 467a7b Generated table #25@0: 789 keys, 202238 bytes
+2026/03/26-08:39:33.277 467a7b Compacted 1@0 + 1@1 files => 202238 bytes
+2026/03/26-08:39:33.279 467a7b compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/03/26-08:39:33.280 467a7b Delete type=2 #24
+2026/03/26-08:39:33.280 467a7b Manual compaction at level-0 from '\x00\x11\x00\x00\x05' @ 1841 : 1 .. '\x00\x12\x00\x00\x00' @ 0 : 0; will stop at (end)
+2026/03/26-08:39:34.200 467a7f Manual compaction at level-0 from '\x00\x12\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x13\x00\x00\x00' @ 0 : 0; will stop at (end)

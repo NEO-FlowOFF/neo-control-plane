@@ -1,0 +1,14 @@
+2026/03/26-08:08:15.032 45782b Reusing MANIFEST /Users/nettomello/CODIGOS/neoflowoff-tiktok/chrome_session_tiktok/Default/Local Storage/leveldb/MANIFEST-000001
+2026/03/26-08:08:15.035 45782b Recovering log #22
+2026/03/26-08:08:15.035 45782b Level-0 table #25: started
+2026/03/26-08:08:15.040 45782b Level-0 table #25: 29266 bytes OK
+2026/03/26-08:08:15.042 45782b Delete type=0 #22
+2026/03/26-08:08:15.046 457830 Compacting 4@0 + 1@1 files
+2026/03/26-08:08:15.054 457830 Generated table #27@0: 189 keys, 279680 bytes
+2026/03/26-08:08:15.054 457830 Compacted 4@0 + 1@1 files => 279680 bytes
+2026/03/26-08:08:15.055 457830 compacted to: files[ 0 1 1 0 0 0 0 ]
+2026/03/26-08:08:15.055 457830 Delete type=2 #17
+2026/03/26-08:08:15.055 457830 Delete type=2 #21
+2026/03/26-08:08:15.055 457830 Delete type=2 #23
+2026/03/26-08:08:15.055 457830 Delete type=2 #25
+2026/03/26-08:08:15.055 457830 Delete type=2 #19

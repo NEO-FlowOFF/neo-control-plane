@@ -138,3 +138,9 @@ Se um servico Railway pode existir sozinho, ele merece ser tratado como dominio 
 
 Infraestrutura compartilhada e normal.
 Repositorio compartilhado por habito e outra conversa.
+
+## Documento de execucao
+
+Para configurar cada no no painel, use:
+
+- [RAILWAY_NODE_SETUP.md](./RAILWAY_NODE_SETUP.md)

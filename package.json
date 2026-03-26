@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "pnpm --recursive run build",
+    "build": "pnpm run db:generate && pnpm --recursive run build",
     "check": "pnpm --recursive run check",
     "workspace:doctor": "node tools/workspace_doctor.js",
     "db:generate": "pnpm --filter @neomello/db run db:generate",

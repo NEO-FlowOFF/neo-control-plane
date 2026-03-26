@@ -58,12 +58,12 @@ install:
 	pnpm install --no-frozen-lockfile
 
 # Verificação de tipos em todo o projeto
-check:
+check: db-generate
 	@echo "🔍 Verificando integridade do código (Type Check)..."
 	pnpm run check
 
 # Build de todos os pacotes na ordem correta
-build:
+build: db-generate
 	@echo "🏗️  Construindo pacotes..."
 	pnpm run build
 

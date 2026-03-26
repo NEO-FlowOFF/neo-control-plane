@@ -54,12 +54,12 @@ await platformAnnouncementsQueue.upsertJobScheduler(
 );
 
 const refreshWorker = new Worker(refreshTokensQueueName, handleRefreshTokenJob, {
-  connection: redisWorkerConnection,
+  connection: redisWorkerConnection as any,
   concurrency: 5,
 });
 
 const webhookWorker = new Worker(webhookProjectorQueueName, handleWebhookProjectorJob, {
-  connection: redisWorkerConnection,
+  connection: redisWorkerConnection as any,
   concurrency: 10,
 });
 
@@ -67,7 +67,7 @@ const inventoryWorker = new Worker(
   inventoryPublisherQueueName,
   handleInventoryPublisherJob,
   {
-    connection: redisWorkerConnection,
+    connection: redisWorkerConnection as any,
     concurrency: 20,
   },
 );
@@ -76,7 +76,7 @@ const announcementWorker = new Worker(
   platformAnnouncementsQueueName,
   handlePlatformAnnouncementsJob,
   {
-    connection: redisWorkerConnection,
+    connection: redisWorkerConnection as any,
     concurrency: 1,
   },
 );
