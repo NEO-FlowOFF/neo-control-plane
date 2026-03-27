@@ -118,6 +118,10 @@ importers:
         version: 5.9.3
 
   packages/landing:
+    dependencies:
+      serve:
+        specifier: ^14.2.6
+        version: 14.2.6
     devDependencies:
       '@astrojs/check':
         specifier: ^0.9.4
