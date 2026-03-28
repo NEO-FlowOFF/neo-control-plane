@@ -24,6 +24,4 @@ const parsed = configSchema.parse(process.env);
 
 export const config = {
   ...parsed,
-  TIKTOK_SHOP_REFRESH_TOKEN_URL:
-    parsed.TIKTOK_SHOP_REFRESH_TOKEN_URL ?? parsed.TIKTOK_SHOP_TOKEN_URL,
 };

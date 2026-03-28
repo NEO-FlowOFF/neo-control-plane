@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "serve dist -s -l tcp://0.0.0.0:${PORT:-3000}"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -16,6 +17,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.13.1",
+    "serve": "^14.2.6",
     "tailwind-merge": "^2.5.2"
   },
   "devDependencies": {
