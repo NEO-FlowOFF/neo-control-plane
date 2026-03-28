@@ -65,7 +65,7 @@ export async function handleRefreshTokenJob(
   }
 
   const refreshed = await refreshOAuthTokens({
-    tokenUrl: config.TIKTOK_SHOP_TOKEN_URL,
+    tokenUrl: config.TIKTOK_SHOP_REFRESH_TOKEN_URL,
     appKey: config.TIKTOK_SHOP_APP_KEY,
     appSecret: config.TIKTOK_SHOP_APP_SECRET,
     refreshToken: account.refreshToken,

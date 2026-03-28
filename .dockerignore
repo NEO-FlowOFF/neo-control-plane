@@ -1,0 +1,20 @@
+.git
+.claude
+.pnpm-store
+.venv
+.vercel
+.vscode
+.DS_Store
+node_modules
+runtime
+
+# Modular mirrors and extracted-repo bridges.
+neo-content-accounts
+neo-content-engine
+neo-content-dashboard
+neo-content-landing
+
+# Local and legacy artifacts not needed for Railway builds.
+accounts
+members
+neo_tiktokshop.py

@@ -1,6 +1,8 @@
 # NΞØ FlowOFF TikTok Platform - Makefile
 
-.PHONY: all help install build dev clean db-generate setup fix-perms check dev-api dev-worker dev-dashboard dev-landing dev-public dev-intelligence minio-up minio-down minio-bucket minio-ls content-setup content-mine content-run content-auto content-research-auto content-runtime-ls content-runtime-clean content-runtime-clean-keep-example neo-setup neo-mine neo-run neo-auto neo-research-auto safe-content-push
+.PHONY: all help install build dev clean db-generate setup fix-perms check dev-api dev-worker dev-dashboard dev-landing dev-public dev-intelligence minio-up minio-down minio-bucket minio-ls content-setup content-mine content-run content-auto content-research-auto content-runtime-ls content-runtime-clean content-runtime-clean-keep-example neo-setup neo-mine neo-run neo-auto neo-research-auto safe-content-push workspace-doctor
+
+ARGS ?=
 
 all: setup build
 
@@ -18,13 +20,15 @@ help:
 	@echo "  make minio-bucket # Cria bucket e publica leitura"
 	@echo "  make minio-ls     # Lista objetos do bucket"
 	@echo "  make minio-down   # Para o container MinIO"
-	@echo "  make content-setup # Prepara modulo apps/content-engine"
-	@echo "  make content-mine  # Pesquisa produtos e gera CSV"
-	@echo "  make content-run   # Renderiza e publica videos"
-	@echo "  make content-auto  # MinIO + render/publicacao"
-	@echo "  make content-research-auto # Pesquisa + render/publicacao"
-	@echo "  make content-runtime-ls # Lista arquivos do runtime"
-	@echo "  make content-runtime-clean # Limpa runtime completo"
+	@echo "  make workspace-doctor # Valida manifests e repositorios modulares"
+	@echo "  make content-*     # Ponte para o repo standalone em ../neo-content-engine"
+	@echo "  make content-setup # Prepara o repo standalone"
+	@echo "  make content-mine  # Pesquisa produtos no repo standalone"
+	@echo "  make content-run   # Renderiza e publica videos no repo standalone"
+	@echo "  make content-auto  # MinIO + render/publicacao no repo standalone"
+	@echo "  make content-research-auto # Pesquisa + render/publicacao no repo standalone"
+	@echo "  make content-runtime-ls # Lista runtime do repo standalone"
+	@echo "  make content-runtime-clean # Limpa runtime do repo standalone"
 	@echo "  make content-runtime-clean-keep-example # Limpa runtime e preserva TX_TEST_IMG"
 	@echo "  make safe-content-push MSG='mensagem' # Commit local com gate de seguranca (sem push)"
 	@echo "  PUSH=1 make safe-content-push MSG='mensagem' # Push remoto explicito"
@@ -54,12 +58,12 @@ install:
 	pnpm install --no-frozen-lockfile
 
 # Verificação de tipos em todo o projeto
-check:
+check: db-generate
 	@echo "🔍 Verificando integridade do código (Type Check)..."
 	pnpm run check
 
 # Build de todos os pacotes na ordem correta
-build:
+build: db-generate
 	@echo "🏗️  Construindo pacotes..."
 	pnpm run build
 
@@ -105,28 +109,28 @@ minio-down:
 	pnpm run minio:down
 
 content-setup:
-	pnpm run content:setup
+	bash tools/content_engine_bridge.sh setup
 
 content-mine:
-	pnpm run content:mine
+	bash tools/content_engine_bridge.sh mine $(filter-out $@,$(MAKECMDGOALS))
 
 content-run:
-	pnpm run content:run
+	bash tools/content_engine_bridge.sh run $(filter-out $@,$(MAKECMDGOALS))
 
 content-auto:
-	pnpm run content:auto
+	bash tools/content_engine_bridge.sh auto $(ARGS)
 
 content-research-auto:
-	pnpm run content:research-auto
+	bash tools/content_engine_bridge.sh research-auto $(ARGS)
 
 content-runtime-ls:
-	@find apps/content-engine/runtime -type f | sort
+	bash tools/content_engine_bridge.sh runtime-ls
 
 content-runtime-clean:
-	python3 tools/clean_content_runtime.py --runtime-dir apps/content-engine/runtime
+	bash tools/content_engine_bridge.sh runtime-clean
 
 content-runtime-clean-keep-example:
-	python3 tools/clean_content_runtime.py --runtime-dir apps/content-engine/runtime --keep-example
+	bash tools/content_engine_bridge.sh runtime-clean-keep-example
 
 neo-setup: content-setup
 
@@ -141,3 +145,9 @@ neo-research-auto: content-research-auto
 safe-content-push:
 	@test -n "$(MSG)" || (echo "Use: make safe-content-push MSG='mensagem do commit'" && exit 1)
 	./tools/safe_content_push.sh "$(MSG)"
+
+workspace-doctor:
+	node tools/workspace_doctor.js
+
+%:
+	@:

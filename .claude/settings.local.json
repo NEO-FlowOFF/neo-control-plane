@@ -14,7 +14,17 @@
       "Bash(pnpm remove:*)",
       "Bash(pnpm add:*)",
       "Bash(pnpm db:generate)",
-      "Bash(git commit -m \"fix: downgrade to Prisma 6.x to resolve engine type compatibility issue:*)"
+      "Bash(git commit -m \"fix: downgrade to Prisma 6.x to resolve engine type compatibility issue:*)",
+      "Bash(railway logs:*)",
+      "Bash(railway status:*)",
+      "Bash(railway link:*)",
+      "Bash(railway variable:*)",
+      "Bash(__NEW_LINE_e4934a5bb24de4a4__ railway:*)",
+      "Bash(railway service:*)",
+      "Bash(railway up:*)",
+      "Bash(curl -s https://neo-tiktok-api.up.railway.app/health)",
+      "Bash(git commit -m \"docs: add TikTok Shop API integration roadmap:*)",
+      "Bash(curl -s -o /dev/null -w \"HTTP Status: %{http_code}\\\\n\" https://dashboard-production-ea06.up.railway.app/)"
     ]
   }
 }

@@ -1,0 +1,61 @@
+{
+  "workspace": "neoflowoff-tiktok-workspace",
+  "organization": "NEO-FlowOFF",
+  "sources": [
+    "README.md",
+    "MODULAR_ARCHITECTURE.md",
+    "RAILWAY_WORKSPACE.md",
+    "local filesystem under a developer workspace root"
+  ],
+  "repos": [
+    {
+      "id": "neoflowoff-tiktok",
+      "localPath": ".",
+      "remote": null,
+      "role": "Transition Workspace / Control Plane",
+      "ownership": "workspace",
+      "status": "active-root",
+      "source": "README.md"
+    },
+    {
+      "id": "neo-content-landing",
+      "localPath": "../neo-content-landing",
+      "remote": "https://github.com/NEO-FlowOFF/neo-content-landing.git",
+      "role": "Public Landing / Acquisition Surface",
+      "ownership": "product",
+      "status": "extracted",
+      "currentSourceOfTruth": "../neo-content-landing",
+      "source": "filesystem + git remote"
+    },
+    {
+      "id": "neo-content-dashboard",
+      "localPath": "../neo-content-dashboard",
+      "remote": "https://github.com/NEO-FlowOFF/neo-content-dashboard.git",
+      "role": "Operational Dashboard / Internal Surface",
+      "ownership": "product",
+      "status": "extracted",
+      "currentSourceOfTruth": "../neo-content-dashboard",
+      "source": "filesystem + git remote"
+    },
+    {
+      "id": "neo-content-accounts",
+      "localPath": "../neo-content-accounts",
+      "remote": "https://github.com/NEO-FlowOFF/neo-content-accounts.git",
+      "role": "Accounts Backend / OAuth / Webhooks / Jobs / Persistence",
+      "ownership": "product",
+      "status": "extracted",
+      "currentSourceOfTruth": "../neo-content-accounts",
+      "source": "filesystem + git remote"
+    },
+    {
+      "id": "neo-content-engine",
+      "localPath": "../neo-content-engine",
+      "remote": "https://github.com/NEO-FlowOFF/neo-content-engine.git",
+      "role": "Local-first Content Engine / Video Pipeline",
+      "ownership": "product",
+      "status": "extracted",
+      "currentSourceOfTruth": "../neo-content-engine",
+      "source": "filesystem + git remote"
+    }
+  ]
+}

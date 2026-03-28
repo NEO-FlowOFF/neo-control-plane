@@ -1,0 +1,7 @@
+requests
+openai
+pandas
+playwright
+tavily-python
+edge-tts
+python-dotenv

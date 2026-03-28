@@ -3,6 +3,8 @@ dist
 .env
 .env.*
 !.env.example
+chrome_session_tiktok
+.env.example
 .railway
 *.log
 .DS_Store
@@ -22,3 +24,6 @@ tiktok-sdk/node_modules
 runtime/
 __pycache__/
 *.py[cod]
+get_token.py
+force_token.html
+packages/api/remote_token.js

@@ -1,166 +1,207 @@
-<!-- markdownlint-disable MD003 MD007 MD013 MD022 MD023 MD025 MD029 MD032 MD033 MD034 -->
+# neoflowoff-tiktok
 
-[<img src="https://img.shields.io/badge/TikTok-ACESSAR_|_CLIQUE_AQUI-FFOFOF?style=for-the-badge&logo=tiktok&logoColor=white&labelColor=FF0050" />](https://www.tiktok.com/t/ZS9d9c7VthG56-A80eX/)
+Workspace raiz de transicao do ecossistema modular TikTok Shop da NEO FlowOFF.
 
-```text
-========================================
-   NΞØ FLOWOFF · TIKTOK PLATFORM
-========================================
+Este repositorio nao deve mais ser lido como casa definitiva de toda a plataforma. Ele agora cumpre 3 papeis:
+
+- workspace local para coordenar a migracao modular
+- ponte temporaria para dominios que ja foram extraidos
+- base atual do que ainda sera separado em repositorios proprios
+
+## Leitura rapida
+
+O desenho modular alvo e este:
+
+- `neo-content-landing`
+- `neo-content-dashboard`
+- `neo-content-accounts`
+- `neo-content-engine`
+
+Hoje, o estado real e:
+
+- `neo-content-landing` ja foi extraido para repo irmao em `../neo-content-landing`
+- `neo-content-dashboard` ja foi extraido para repo irmao em `../neo-content-dashboard`
+- `neo-content-accounts` ja foi extraido para repo irmao em `../neo-content-accounts`
+- `neo-content-engine` ja foi extraido para repo irmao em `../neo-content-engine`
+- o espelho antigo em `apps/content-engine` foi aposentado
+- `packages/landing`, `packages/dashboard`, `packages/api`, `packages/db`, `packages/worker`, `packages/neo-intelligence` e `tiktok-sdk` ainda existem aqui como espelhos transitorios
+- a raiz `neoflowoff-tiktok` existe para coordenar a transicao, nao para crescer indefinidamente
+
+## Modulos e fronteiras
+
+### 1. neo-content-landing
+
+Responsabilidade:
+
+- site publico
+- vitrine institucional
+- superficie de entrada
+
+Repo atual:
+
+- `../neo-content-landing`
+- remoto: [NEO-FlowOFF/neo-content-landing](https://github.com/NEO-FlowOFF/neo-content-landing)
+
+Espelho transitorio neste workspace:
+
+- `packages/landing`
+
+### 2. neo-content-dashboard
+
+Responsabilidade:
+
+- painel operacional
+- consumo da API de contas
+- visualizacao de saude, ranking e operacao
+
+Repo atual:
+
+- `../neo-content-dashboard`
+- remoto: [NEO-FlowOFF/neo-content-dashboard](https://github.com/NEO-FlowOFF/neo-content-dashboard)
+
+Espelho transitorio neste workspace:
+
+- `packages/dashboard`
+
+### 3. neo-content-accounts
+
+Responsabilidade:
+
+- OAuth TikTok Shop
+- persistencia em Postgres
+- webhooks
+- filas e jobs
+- SDK e inteligencia auxiliar
+
+Repo atual:
+
+- `../neo-content-accounts`
+- remoto: [NEO-FlowOFF/neo-content-accounts](https://github.com/NEO-FlowOFF/neo-content-accounts)
+
+Espelho transitorio neste workspace:
+
+- `packages/api`
+- `packages/db`
+- `packages/worker`
+- `packages/neo-intelligence`
+- `tiktok-sdk`
+
+### 4. neo-content-engine
+
+Responsabilidade:
+
+- pesquisa de oportunidades
+- geracao de roteiro, audio e video
+- upload opcional de ativos
+- pipeline local-first para TikTok Shop
+
+Repo atual:
+
+- `../neo-content-engine`
+- remoto: [NEO-FlowOFF/neo-content-engine](https://github.com/NEO-FlowOFF/neo-content-engine)
+
+Observacao critica:
+
+- o engine roda localmente
+- GitHub serve para versionar e transportar
+- Railway nao e o destino natural desse modulo neste momento
+
+## Como este workspace funciona hoje
+
+### Nos visuais na raiz
+
+Para leitura operacional imediata no Finder, a raiz agora expõe 4 nos:
+
+- `neo-content-engine`
+- `neo-content-landing`
+- `neo-content-dashboard`
+- `neo-content-accounts`
+
+Esses nos existem para navegacao e clareza arquitetural.
+Eles nao substituem a fonte de verdade de cada dominio.
+
+### O que continua aqui
+
+- espelhos transitorios de modulos ja extraidos
+- docs de transicao
+- comandos de compatibilidade
+- referencias do Railway atual
+
+### O que ja foi externalizado
+
+- `landing`
+- `dashboard`
+- `accounts`
+- `content-engine`
+
+Os comandos abaixo na raiz sao apenas ponte:
+
+```bash
+make content-setup
+make content-run -- --skip-upload --skip-openai
+pnpm run content:run
 ```
 
-Motor de automação inteligente para TikTok Sellers,
-impulsionado pelo Neural Core do NΞØ Protocol.
+Eles delegam para:
 
-> **Versão:** v1.0.0-flowoff  
-> **Licença:** MIT  
-> **Ambiente:** Monorepo pnpm
-
-──────────────────────────++++++
-
-## NEØ TIKTOK SHOP
-
-O ecossistema definitivo para **TikTok Sellers** que buscam escala,
-consistência e alta conversão via inteligência neural automatizada.
-Ao ingressar no ecossistema, você recebe acesso
-ao arsenal projetado para dominar o nicho de TikTok Shop:
-
-```text
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-┃ CAPACIDADES DA PLATAFORMA
-┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-┃
-┃ 🤖 Inteligência Artificial
-┃    └─  GPT-4 Turbo
-┃       via @neomello/intelligence
-┃
-┃ ⚙️ Automação de Flow
-┃    └─ Sincronização com API TikTok
-┃       compartilhando resultados do Hub
-┃
-┃ 📊 Dashboard do time Multi-Store
-┃    └─ Gestão centralizada para
-┃       múltiplas contas de sellers
-┃
-┃ 🛡️ Servidor 24/7
-┃    └─ Atualização automática de novidades
-┃       dicas, e novidades direto da fonte
-┃
-┃ 🏗️ Infraestrutura Escalável
-┃    └─ NEØ FlowOFF conta e garante que
-┃       se houver uma disparada no volume
-|        de usuarios e dados,
-|.       nada vai se perder
-┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```bash
+../neo-content-engine
 ```
 
-────────────────────────────────────────
+## Railway
 
-```
-### VANTAGENS EXCLUSIVAS PARA MEMBROS
+No Railway, a leitura correta e de workspace com servicos, nao de monolito disfarçado.
 
-······································································
-** ENTRADA E ESTRUTURA **
-······································································
-  • Entrada direta no TikTok Shop sem fricção técnica
-  • Estrutura pronta de captação e conversão
-  • Redução do tempo entre cadastro e primeira venda
-  • Organização dos produtos com lógica de venda
-    (não catálogo morto)
+Servicos atuais observados:
 
-······································································
-**  CONVERSÃO E TRÁFEGO **
-······································································
-  • Aumento da taxa de conversão com páginas
-    orientadas a compra
-  • Direcionamento de tráfego já alinhado com intenção de compra
-  • Clareza sobre quais produtos escalar e quais descartar
+- `landing`
+- `dashboard`
+- `neo-tiktok-api`
+- `Postgres`
+- `Redis`
 
-······································································
-**  CONTEÚDO E AUTOMAÇÃO **
-······································································
-  • Produção de conteúdo orientada a venda
-    (não engajamento vazio)
-  • Consistência de postagem sem depender de esforço manual
-  • Redução de tempo operacional com automações aplicadas
+Relacao alvo entre Railway e repositorios:
 
-······································································
-**  ANÁLISE E OTIMIZAÇÃO  **
-······································································
-  • Visão clara do desempenho (o que vende, quando e por quê)
-  • Ajustes rápidos baseados em dados, não achismo
-  • Evolução contínua do setup conforme comportamento do público
+- `landing` -> `neo-content-landing`
+- `dashboard` -> `neo-content-dashboard`
+- `neo-tiktok-api` -> `neo-content-accounts`
+- `Postgres` -> recurso do workspace consumido por `neo-content-accounts`
+- `Redis` -> recurso do workspace consumido por `neo-content-accounts`
+- `neo-content-engine` -> fora do Railway, local-first
 
-······································································
-** ESCALA E EXPANSÃO **
-······································································
-  • Base estruturada para escalar (ads, afiliados, creators)
-  • Preparação para operar múltiplos canais além do TikTok
-  • Independência progressiva de plataformas isoladas
+## Estado de transicao
 
-······································································
-### ACESSE AGORA E COMECE A VENDER!
-```
+Este repositorio ainda contem espelhos de codigo que serao aposentados. Portanto:
 
-────────────────────────────────────────
+- nem todo diretorio aqui deve continuar existindo a longo prazo
+- nem todo comando aqui representa a casa final do modulo
+- a raiz deve ser lida como workspace de migracao arquitetural
 
-> ⚙️ **Instruções Técnicas:**  
-> Consulte o guia detalhado → **[SETUP.md](./SETUP.md)**
+## Documentos na raiz
 
-────────────────────────────────────────
+- [SETUP.md](./SETUP.md)
+  Setup tecnico atual do workspace raiz
+- [MODULAR_ARCHITECTURE.md](./MODULAR_ARCHITECTURE.md)
+  Mapa de dominios, repositorios e estrategia de extracao
+- [RAILWAY_WORKSPACE.md](./RAILWAY_WORKSPACE.md)
+  Mapa entre servicos Railway e repositorios modulares
+- [NEXTSTEPS.md](./NEXTSTEPS.md)
+  backlog tecnico do backend TikTok Shop
 
-## Roadmap: Implementações em andamento
+## Regra de ouro
 
-```text
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-┃ FASE          STATUS      OBJETIVO
-┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-┃ 1. Estabilidade [OK]      PNPM + Prisma v6
-┃ 2. IA Core      [ATIVO]   Legendas Neurais
-┃ 3. Automação    [PENDENTE] Fluxo Auto-Post
-┃ 4. Tendências   [Q2 2026]  Análise de Mercado
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+Quando houver duvida entre "onde esta agora" e "onde deve viver", use a segunda pergunta.
 
-## 🔐 Variáveis Operacionais
+Arquitetura modular nao e sobre mover pasta. E sobre impedir que um dominio continue pagando aluguel cognitivo dentro do outro.
 
-As variáveis mínimas da plataforma vivem no arquivo `.env.example`.
-O `dashboard` lê `VITE_API_BASE_URL` a partir da raiz do monorepo via `envDir` do Vite.
+## Variaveis operacionais
 
-- `DATABASE_URL`: conexão principal com PostgreSQL.
-- `DB_CONNECT_TIMEOUT_MS`: timeout de bootstrap da API para falhar rápido se o banco não responder.
-- `API_BASE_URL`: URL pública usada pelo callback OAuth.
-- `TIKTOK_SHOP_APP_KEY` e `TIKTOK_SHOP_APP_SECRET`: credenciais da integração TikTok Shop.
-- `TIKTOK_WEBHOOK_SECRET`, `TIKTOK_WEBHOOK_SIGNATURE_HEADER` e `TIKTOK_WEBHOOK_TIMESTAMP_HEADER`: validação de assinatura dos webhooks.
-- `VITE_API_BASE_URL`: endpoint base usado pelo dashboard para consultar `/health` e demais rotas da API.
+As variaveis minimas do workspace vivem em [`.env.example`](/Users/nettomello/CODIGOS/neoflowoff-tiktok/.env.example).
+O dashboard continua lendo `VITE_API_BASE_URL` a partir da raiz via `envDir` do Vite.
 
-────────────────────────────────────────
-
-## ⚖️ Autoria & Licença
-
-```
-
-▓▓▓ NΞØ MELLØ
-────────────────────────────────────────
-Arquitetura · NΞØ Protocol
-neo@neoprotocol.space
-
-- **Proteção de IP:**
-  Toda a arquitetura e código originais
-  são Propriedade Intelectual do NΞØ Protocol.
-────────────────++++++++
-
-```
-
-```
-      ▄░
-  ▄██▄
- █  █ █░
- █ █░ █
-  ▀██▀
-  ▀░
-
-NΞØ PROTOCOL
-```
-
-"Code is law. Expand until silence becomes structure."
+- `DATABASE_URL`: conexao principal com PostgreSQL.
+- `DB_CONNECT_TIMEOUT_MS`: timeout de bootstrap da API para falha rapida quando o banco nao responde.
+- `API_BASE_URL`: URL publica usada no callback OAuth.
+- `TIKTOK_SHOP_APP_KEY` e `TIKTOK_SHOP_APP_SECRET`: credenciais da integracao TikTok Shop.
+- `TIKTOK_WEBHOOK_SECRET`, `TIKTOK_WEBHOOK_SIGNATURE_HEADER` e `TIKTOK_WEBHOOK_TIMESTAMP_HEADER`: validacao de assinatura dos webhooks.
+- `VITE_API_BASE_URL`: endpoint base usado pelo dashboard para `/health` e demais rotas da API.

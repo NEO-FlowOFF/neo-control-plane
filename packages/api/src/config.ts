@@ -12,6 +12,7 @@ const configSchema = z.object({
   TIKTOK_SHOP_APP_SECRET: z.string().min(1),
   TIKTOK_SHOP_AUTHORIZE_URL: z.string().url(),
   TIKTOK_SHOP_TOKEN_URL: z.string().url(),
+  TIKTOK_SHOP_REFRESH_TOKEN_URL: z.string().url().optional(),
   TIKTOK_SHOP_REDIRECT_URI: z.string().url(),
   OAUTH_STATE_SECRET: z.string().min(16),
   TIKTOK_WEBHOOK_SECRET: z.string().min(1),
