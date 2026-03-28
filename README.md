@@ -1,4 +1,4 @@
-# neoflowoff-tiktok
+# neo-control-plane
 
 Control Plane do ecossistema modular TikTok Shop da NEO FlowOFF.
 
@@ -12,16 +12,16 @@ Arquitetura ativa:
 
 - `neo-content-landing`
 - `neo-content-dashboard`
-- `neo-content-accounts`
+- `neo-content-accounts-api`
 - `neo-content-engine`
 
 Estado atual:
 
-- `neo-content-landing` vive em `../neo-content-landing`
-- `neo-content-dashboard` vive em `../neo-content-dashboard`
-- `neo-content-accounts` vive em `../neo-content-accounts`
-- `neo-content-engine` vive em `../neo-content-engine`
-- `neoflowoff-tiktok` e o Control Plane dessa topologia
+- `neo-content-landing` mantém o nome `../neo-content-landing`
+- `neo-content-dashboard` mantém o nome`../neo-content-dashboard`
+- `neo-content-accounts-api` inclusao de -api `../neo-content-accounts-api`
+- `neo-content-engine` mantem o nome `../neo-content-engine`
+- `neo-control-plane`  altera para `../neo-control-plane` 
 
 ## Fronteiras de dominio
 
@@ -49,7 +49,7 @@ Fonte de verdade:
 - `../neo-content-dashboard`
 - remoto: [NEO-FlowOFF/neo-content-dashboard](https://github.com/NEO-FlowOFF/neo-content-dashboard)
 
-### 3) neo-content-accounts
+### 3) neo-content-accounts-api
 
 Responsabilidade:
 
@@ -61,8 +61,8 @@ Responsabilidade:
 
 Fonte de verdade:
 
-- `../neo-content-accounts`
-- remoto: [NEO-FlowOFF/neo-content-accounts](https://github.com/NEO-FlowOFF/neo-content-accounts)
+- `../neo-content-accounts-api`
+- remoto: [NEO-FlowOFF/neo-content-accounts-api](https://github.com/NEO-FlowOFF/neo-content-accounts-api)
 
 ### 4) neo-content-engine
 
@@ -94,23 +94,23 @@ Este repositorio nao deve receber codigo de produto novo.
 Leitura correta no Railway:
 
 - Projeto stack de contas: `neo-content-accounts-stack`
-- API e Worker apontam para o repo `neo-content-accounts`
-- `Postgres` e `Redis` suportam `neo-content-accounts`
+- API e Worker apontam para o repo `neo-content-accounts-api`
+- `Postgres` e `Redis` suportam `neo-content-accounts-api`
 
 Mapeamento alvo:
 
 - `landing` -> `neo-content-landing`
 - `dashboard` -> `neo-content-dashboard`
-- `neo-content-api` (ou nome de servico equivalente no painel) -> `neo-content-accounts`
-- `neo-content-worker` -> `neo-content-accounts`
+- `neo-content-api` (ou nome de servico equivalente no painel) -> `neo-content-accounts-api`
+- `neo-content-worker` -> `neo-content-accounts-api`
 
 ## Variaveis operacionais
 
-A raiz `neoflowoff-tiktok` nao e fonte primaria de `.env` de producao.
+A raiz `neo-control-plane` nao e fonte primaria de `.env` de producao.
 
 Variaveis devem viver por modulo:
 
-- `../neo-content-accounts/.env`
+- `../neo-content-accounts-api/.env`
 - `../neo-content-dashboard/.env`
 - `../neo-content-landing/.env`
 - `../neo-content-engine/.env`

@@ -1,5 +1,5 @@
 {
-  "workspace": "neoflowoff-tiktok-workspace",
+  "workspace": "neo-control-plane-workspace",
   "organization": "NEO-FlowOFF",
   "sources": [
     "README.md",
@@ -9,10 +9,10 @@
   ],
   "repos": [
     {
-      "id": "neoflowoff-tiktok",
+      "id": "neo-control-plane",
       "localPath": ".",
-      "remote": null,
-      "role": "Transition Workspace / Control Plane",
+      "remote": "https://github.com/NEO-FlowOFF/neo-control-plane.git",
+      "role": "Control Plane / Workspace Orchestrator",
       "ownership": "workspace",
       "status": "active-root",
       "source": "README.md"
@@ -38,13 +38,13 @@
       "source": "filesystem + git remote"
     },
     {
-      "id": "neo-content-accounts",
-      "localPath": "../neo-content-accounts",
-      "remote": "https://github.com/NEO-FlowOFF/neo-content-accounts.git",
+      "id": "neo-content-accounts-api",
+      "localPath": "../neo-content-accounts-api",
+      "remote": "https://github.com/NEO-FlowOFF/neo-content-accounts-api.git",
       "role": "Accounts Backend / OAuth / Webhooks / Jobs / Persistence",
       "ownership": "product",
       "status": "extracted",
-      "currentSourceOfTruth": "../neo-content-accounts",
+      "currentSourceOfTruth": "../neo-content-accounts-api",
       "source": "filesystem + git remote"
     },
     {

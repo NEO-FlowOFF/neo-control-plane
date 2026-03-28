@@ -54,7 +54,7 @@ prevalece a arquitetura declarada.
    operar em `../neo-content-dashboard`.
 5. Se a tarefa for sobre OAuth, webhooks, DB, worker,
    SDK TikTok ou inteligencia auxiliar,
-   operar em `../neo-content-accounts`.
+   operar em `../neo-content-accounts-api`.
 6. Nunca confundir bridge de compatibilidade
    com fonte de verdade do dominio.
 
@@ -88,7 +88,7 @@ prevalece a arquitetura declarada.
   - `neo-content-engine`
   - `neo-content-landing`
   - `neo-content-dashboard`
-  - `neo-content-accounts`
+  - `neo-content-accounts-api`
 - Os comandos `make content-*` e `pnpm run content:*`
   nesta raiz sao apenas ponte para `../neo-content-engine`.
 - Antes de alterar qualquer comando raiz,
@@ -106,8 +106,8 @@ prevalece a arquitetura declarada.
   em `/Users/nettomello/CODIGOS/neo-content-landing`
 - `neo-content-dashboard`
   em `/Users/nettomello/CODIGOS/neo-content-dashboard`
-- `neo-content-accounts`
-  em `/Users/nettomello/CODIGOS/neo-content-accounts`
+- `neo-content-accounts-api`
+  em `/Users/nettomello/CODIGOS/neo-content-accounts-api`
 - `neo-content-engine`
   em `/Users/nettomello/CODIGOS/neo-content-engine`
 
@@ -115,11 +115,11 @@ prevalece a arquitetura declarada.
 
 - `packages/landing` -> `neo-content-landing`
 - `packages/dashboard` -> `neo-content-dashboard`
-- `packages/api` -> `neo-content-accounts`
-- `packages/db` -> `neo-content-accounts`
-- `packages/worker` -> `neo-content-accounts`
-- `packages/neo-intelligence` -> `neo-content-accounts`
-- `tiktok-sdk` -> `neo-content-accounts`
+- `packages/api` -> `neo-content-accounts-api`
+- `packages/db` -> `neo-content-accounts-api`
+- `packages/worker` -> `neo-content-accounts-api`
+- `packages/neo-intelligence` -> `neo-content-accounts-api`
+- `tiktok-sdk` -> `neo-content-accounts-api`
 
 ### Infraestrutura observada
 

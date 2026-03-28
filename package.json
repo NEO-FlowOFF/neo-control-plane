@@ -1,5 +1,5 @@
 {
-  "name": "neoflowoff-tiktok-orchestrator",
+  "name": "neo-control-plane-orchestrator",
   "private": true,
   "type": "module",
   "scripts": {

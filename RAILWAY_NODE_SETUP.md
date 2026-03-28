@@ -6,7 +6,7 @@ Use este arquivo como checklist direto no painel.
 
 ## Regra central
 
-- Workspace Railway: `neoflowoff-tiktok`
+- Workspace Railway: `neo-control-plane`
 - Branch recomendada para deploy inicial: `main`
 - Root Directory: vazio, salvo se voce decidir mudar a raiz do repo no futuro
 - `neo-content-engine` nao vai para o Railway neste momento
@@ -92,7 +92,7 @@ Nome do servico:
 
 Repositorio:
 
-- [NEO-FlowOFF/neo-content-accounts](https://github.com/NEO-FlowOFF/neo-content-accounts)
+- [NEO-FlowOFF/neo-content-accounts-api](https://github.com/NEO-FlowOFF/neo-content-accounts-api)
 
 Tipo:
 
@@ -148,7 +148,7 @@ Nome do servico:
 
 Repositorio:
 
-- [NEO-FlowOFF/neo-content-accounts](https://github.com/NEO-FlowOFF/neo-content-accounts)
+- [NEO-FlowOFF/neo-content-accounts-api](https://github.com/NEO-FlowOFF/neo-content-accounts-api)
 
 Tipo:
 
@@ -242,8 +242,8 @@ Observacoes:
 
 1. Ajustar `Postgres`
 2. Ajustar `Redis`
-3. Apontar `neo-tiktok-api` para `neo-content-accounts`
-4. Criar `neo-tiktok-worker` usando `neo-content-accounts`
+3. Apontar `neo-tiktok-api` para `neo-content-accounts-api`
+4. Criar `neo-tiktok-worker` usando `neo-content-accounts-api`
 5. Apontar `dashboard` para `neo-content-dashboard`
 6. Apontar `landing` para `neo-content-landing`
 7. Confirmar que `VITE_API_BASE_URL` usa o dominio real final da API

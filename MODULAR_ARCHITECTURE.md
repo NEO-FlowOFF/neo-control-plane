@@ -13,7 +13,7 @@ Sair do modelo "tudo mora no mesmo repositorio" para um modelo em que cada domin
 
 ## Repositorios alvo
 
-### neoflowoff-tiktok
+### neo-control-plane
 
 Papel:
 
@@ -51,7 +51,7 @@ Dependencia principal:
 
 - `VITE_API_BASE_URL`
 
-### neo-content-accounts
+### neo-content-accounts-api
 
 Papel:
 
@@ -142,7 +142,7 @@ Nao sao a arquitetura final.
 
 - `neo-content-landing` extraido para repo proprio local
 - `neo-content-dashboard` extraido para repo proprio local
-- `neo-content-accounts` extraido para repo proprio local
+- `neo-content-accounts-api` extraido para repo proprio local
 - `neo-content-engine` extraido para repo proprio local
 - ponte do workspace raiz apontando para o repo irmao
 - espelho antigo em `apps/content-engine` removido do fluxo
@@ -168,7 +168,7 @@ Nao sao a arquitetura final.
 
 - `landing` para `../neo-content-landing`
 - `dashboard` para `../neo-content-dashboard`
-- `accounts` para `../neo-content-accounts`
+- `accounts` para `../neo-content-accounts-api`
 - `content-engine` para `../neo-content-engine`
 
 ### Fica como apoio temporario

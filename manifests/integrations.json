@@ -1,5 +1,5 @@
 {
-  "workspace": "neoflowoff-tiktok-workspace",
+  "workspace": "neo-control-plane-workspace",
   "organization": "NEO-FlowOFF",
   "sources": [
     "RAILWAY_WORKSPACE.md",
@@ -10,8 +10,8 @@
   ],
   "integrations": [
     {
-      "id": "neo-content-dashboard__neo-content-accounts",
-      "producer": "neo-content-accounts",
+      "id": "neo-content-dashboard__neo-content-accounts-api",
+      "producer": "neo-content-accounts-api",
       "consumer": "neo-content-dashboard",
       "contract": {
         "type": "http-api",
@@ -21,9 +21,9 @@
       "source": "packages/dashboard/src/lib/api.ts"
     },
     {
-      "id": "railway-postgres__neo-content-accounts",
+      "id": "railway-postgres__neo-content-accounts-api",
       "producer": "railway-postgres",
-      "consumer": "neo-content-accounts",
+      "consumer": "neo-content-accounts-api",
       "contract": {
         "type": "database",
         "surface": "DATABASE_URL"
@@ -32,9 +32,9 @@
       "source": "RAILWAY_WORKSPACE.md"
     },
     {
-      "id": "railway-redis__neo-content-accounts",
+      "id": "railway-redis__neo-content-accounts-api",
       "producer": "railway-redis",
-      "consumer": "neo-content-accounts",
+      "consumer": "neo-content-accounts-api",
       "contract": {
         "type": "queue-backend",
         "surface": "REDIS_URL"
@@ -43,8 +43,8 @@
       "source": "RAILWAY_WORKSPACE.md"
     },
     {
-      "id": "neoflowoff-tiktok__neo-content-engine",
-      "producer": "neoflowoff-tiktok",
+      "id": "neo-control-plane__neo-content-engine",
+      "producer": "neo-control-plane",
       "consumer": "neo-content-engine",
       "contract": {
         "type": "local-command-bridge",

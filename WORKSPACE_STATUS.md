@@ -8,7 +8,7 @@ Estado vivo da modularizacao do ecossistema TikTok Shop.
 | :-- | :-- | :-- | :-- | :-- |
 | Landing | `neo-content-landing` | Extraido | `../neo-content-landing` | `landing` |
 | Dashboard | `neo-content-dashboard` | Extraido | `../neo-content-dashboard` | `dashboard` |
-| Accounts | `neo-content-accounts` | Extraido | `../neo-content-accounts` | `neo-tiktok-api` + `Postgres` + `Redis` |
+| Accounts | `neo-content-accounts-api` | Extraido | `../neo-content-accounts-api` | `neo-tiktok-api` + `Postgres` + `Redis` |
 | Engine | `neo-content-engine` | Extraido | `../neo-content-engine` | Fora do Railway |
 
 ## O que este root ainda faz

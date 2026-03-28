@@ -4,8 +4,8 @@ Data: `2026-03-28`
 
 ## Projetos auditados
 
-1. `neo-content-accounts`
-- Arquivo: `neo-content-accounts.audit.md`
+1. `neo-content-accounts-api`
+- Arquivo: `neo-content-accounts-api.audit.md`
 - Veredito: saudável
 
 2. `neo-content-dashboard`

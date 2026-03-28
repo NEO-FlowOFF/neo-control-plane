@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-ACCOUNTS_DIR="${ACCOUNTS_DIR:-$ROOT_DIR/../neo-content-accounts}"
+ACCOUNTS_DIR="${ACCOUNTS_DIR:-$ROOT_DIR/../neo-content-accounts-api}"
 DASHBOARD_DIR="${DASHBOARD_DIR:-$ROOT_DIR/../neo-content-dashboard}"
 LANDING_DIR="${LANDING_DIR:-$ROOT_DIR/../neo-content-landing}"
 ENGINE_DIR="${ENGINE_DIR:-$ROOT_DIR/../neo-content-engine}"

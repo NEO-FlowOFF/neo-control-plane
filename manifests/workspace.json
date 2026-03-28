@@ -1,8 +1,8 @@
 {
-  "workspaceName": "neoflowoff-tiktok-workspace",
+  "workspaceName": "neo-control-plane-workspace",
   "organization": "NEO-FlowOFF",
-  "localAggregatorFolder": "./neoflowoff-tiktok",
-  "recommendedRepositoryName": "neoflowoff-tiktok",
+  "localAggregatorFolder": "./neo-control-plane",
+  "recommendedRepositoryName": "neo-control-plane",
   "operationalMode": "transition-control-plane",
   "packageManager": "pnpm",
   "tracks": [
