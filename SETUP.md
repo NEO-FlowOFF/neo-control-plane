@@ -63,10 +63,10 @@ A geração/validação de banco foi movida para `neo-content-accounts-api`:
 
 As variáveis agora pertencem ao domínio correto:
 
-- `neo-content-accounts-api/.env`
-- `neo-content-dashboard/.env` (quando aplicável)
-- `neo-content-landing/.env` (quando aplicável)
-- `neo-content-engine/.env`
+- `../neo-content-accounts-api/.env`
+- `../neo-content-dashboard/.env` (quando aplicável)
+- `../neo-content-landing/.env` (quando aplicável)
+- `../neo-content-engine/.env`
 
 Esta raiz não é mais fonte primária de `.env` operacional.
 
