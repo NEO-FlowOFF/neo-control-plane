@@ -1,29 +1,23 @@
 node_modules
-dist
 .env
 .env.*
 !.env.example
-chrome_session_tiktok
-.env.example
-.railway
+.env*.local
 *.log
 .DS_Store
 
-# Prisma
-packages/db/generated
-
-# Workspace specific node_modules
-packages/*/node_modules
-tiktok-sdk/node_modules
-
-# PNPM
 .pnpm-store
 .vercel
-.env*.local
 .venv/
-runtime/
 __pycache__/
 *.py[cod]
-get_token.py
-force_token.html
-packages/api/remote_token.js
+
+# Legacy or transient local artifacts
+chrome_session_tiktok/
+accounts/
+TikTok_Arbitrage_Node/
+repomix-output.md
+runtime/
+
+# Local member secrets
+members/*/.env
