@@ -1,0 +1,704 @@
+{
+  "schema_version": "1.0.0",
+  "generated_at": "2026-04-01T04:57:43-03:00",
+  "workspace": {
+    "root_path": "/Users/nettomello/CODIGOS/flowoff_tik_tok_partner",
+    "registry_file": "neo-control-plane/manifests/workspace.registry.json",
+    "scan_scope": "top_level_directories_only",
+    "analysis_mode": "read_only",
+    "canonical_project_id_rule": "use_top_level_folder_name",
+    "project_count": 5,
+    "git_repository_count": 5,
+    "non_git_directory_count": 0,
+    "summary_by_status": {
+      "active": 5,
+      "experimental": 0,
+      "legacy": 0
+    },
+    "summary_by_responsibility": {
+      "control_plane": 1,
+      "frontend_public": 1,
+      "frontend_internal": 1,
+      "api_backend": 1,
+      "content_pipeline": 1
+    }
+  },
+  "taxonomy": {
+    "responsibility_categories": [
+      "control_plane",
+      "frontend_public",
+      "frontend_internal",
+      "api_backend",
+      "worker_backend",
+      "content_pipeline"
+    ],
+    "criticality_levels": ["critical", "high", "medium", "low"],
+    "coupling_levels": ["tight", "moderate", "loose"],
+    "status_values": ["active", "experimental", "legacy"]
+  },
+  "system_observations": [
+    "The workspace is modular: neo-control-plane treats sibling repositories as sources of truth instead of keeping a permanent monorepo runtime.",
+    "neo-content-dashboard and neo-content-accounts-api now share an aligned operational contract over /ops/tiktok-shop/* endpoints.",
+    "neo-content-engine is operationally isolated from Railway and keeps heavy runtime state outside Git."
+  ],
+  "projects": [
+    {
+      "id": "neo-control-plane",
+      "canonical_name": "neo-control-plane",
+      "local_path": "./neo-control-plane",
+      "aliases": ["control-plane"],
+      "git": {
+        "is_git_repo": true,
+        "origin_url": "https://github.com/NEO-FlowOFF/neo-control-plane.git",
+        "declared_remote_expected": "https://github.com/NEO-FlowOFF/neo-control-plane.git",
+        "remote_alignment": "aligned"
+      },
+      "description_functional": "Workspace root for coordination, manifests, cross-repo documentation and command bridges. It does not host the primary product runtime.",
+      "responsibility_category": "control_plane",
+      "responsibility_subtypes": [
+        "workspace_orchestrator",
+        "documentation_registry",
+        "compatibility_bridge"
+      ],
+      "tech_stack": ["bash", "pnpm", "make", "json_manifests"],
+      "deployment_context": {
+        "mode": "local_orchestration_only",
+        "notes": "Used by developers and agents to coordinate sibling repositories."
+      },
+      "inputs": {
+        "api": [],
+        "webhooks": [],
+        "events": [],
+        "queues": [],
+        "files": [
+          "neo-control-plane/manifests/workspace.json",
+          "neo-control-plane/manifests/repos.json",
+          "neo-control-plane/manifests/integrations.json"
+        ],
+        "commands": [
+          "pnpm run doctor",
+          "pnpm run build",
+          "pnpm run check",
+          "pnpm run dev:api",
+          "pnpm run dev:worker",
+          "pnpm run dev:dashboard",
+          "pnpm run dev:landing",
+          "pnpm run content:*"
+        ],
+        "ui": []
+      },
+      "outputs": {
+        "api": [],
+        "webhooks": [],
+        "events": [],
+        "queues": [],
+        "files": [
+          "neo-control-plane/README.md",
+          "neo-control-plane/WORKSPACE_STATUS.md",
+          "neo-control-plane/MODULAR_ARCHITECTURE.md",
+          "neo-control-plane/docs/PIPELINE_NEO_TIKTOKSHOP.md",
+          "neo-control-plane/docs/PIPELINE_NEO_TIKTOKSHOP_RUNBOOK.md"
+        ],
+        "storage": [],
+        "commands": [
+          "dispatch build/check/dev to ../neo-content-accounts-api",
+          "dispatch build/check/dev to ../neo-content-dashboard",
+          "dispatch build/check/dev to ../neo-content-landing",
+          "dispatch content:* to ../neo-content-engine"
+        ],
+        "ui": []
+      },
+      "dependencies": {
+        "internal": [
+          {
+            "project_id": "neo-content-accounts-api",
+            "type": "local_orchestration",
+            "details": "Build, check, dev and db commands are proxied to the accounts repository."
+          },
+          {
+            "project_id": "neo-content-dashboard",
+            "type": "local_orchestration",
+            "details": "Build, check and dev commands are proxied to the dashboard repository."
+          },
+          {
+            "project_id": "neo-content-landing",
+            "type": "local_orchestration",
+            "details": "Build, check and dev commands are proxied to the landing repository."
+          },
+          {
+            "project_id": "neo-content-engine",
+            "type": "local_orchestration",
+            "details": "content:* and minio helpers are proxied to the content engine repository."
+          }
+        ],
+        "external": [
+          {
+            "name": "pnpm",
+            "type": "toolchain"
+          },
+          {
+            "name": "bash",
+            "type": "toolchain"
+          },
+          {
+            "name": "make",
+            "type": "toolchain"
+          }
+        ]
+      },
+      "criticality": {
+        "level": "medium",
+        "reason": "It is not part of the product data plane, but it is the main continuity layer for workspace understanding and local orchestration."
+      },
+      "coupling": {
+        "level": "tight",
+        "reason": "It hardcodes sibling paths, orchestration commands and cross-repo manifests.",
+        "coupled_to": [
+          "neo-content-accounts-api",
+          "neo-content-dashboard",
+          "neo-content-landing",
+          "neo-content-engine"
+        ]
+      },
+      "status": "active",
+      "status_notes": [
+        "Repository is operating as a transition control plane."
+      ],
+      "evidence": [
+        "neo-control-plane/README.md",
+        "neo-control-plane/package.json",
+        "neo-control-plane/tools/workspace_orchestrator.sh",
+        "neo-control-plane/manifests/workspace.json",
+        "neo-control-plane/manifests/repos.json",
+        "neo-control-plane/manifests/integrations.json"
+      ]
+    },
+    {
+      "id": "neo-content-landing",
+      "canonical_name": "neo-content-landing",
+      "local_path": "./neo-content-landing",
+      "aliases": ["landing"],
+      "git": {
+        "is_git_repo": true,
+        "origin_url": "https://github.com/NEO-FlowOFF/neo-content-landing.git",
+        "declared_remote_expected": "https://github.com/NEO-FlowOFF/neo-content-landing.git",
+        "remote_alignment": "aligned"
+      },
+      "description_functional": "Public Astro site with homepage, privacy policy and terms pages. It is the public acquisition and legal surface for the platform.",
+      "responsibility_category": "frontend_public",
+      "responsibility_subtypes": ["public_website", "legal_surface"],
+      "tech_stack": ["Astro", "TypeScript", "static_html", "css"],
+      "deployment_context": {
+        "mode": "static_frontend",
+        "notes": "Builds a public-facing site; no application server code was found."
+      },
+      "inputs": {
+        "api": [],
+        "webhooks": [],
+        "events": [],
+        "queues": [],
+        "files": [],
+        "commands": ["pnpm dev", "pnpm build", "pnpm preview", "pnpm start"],
+        "ui": [
+          "browser requests to /",
+          "browser requests to /privacy",
+          "browser requests to /terms"
+        ]
+      },
+      "outputs": {
+        "api": [],
+        "webhooks": [],
+        "events": [],
+        "queues": [],
+        "files": ["dist/*"],
+        "storage": [],
+        "commands": [],
+        "ui": [
+          "public static route /",
+          "public static route /privacy",
+          "public static route /terms",
+          "mailto CTA to neo@neoprotocol.space"
+        ]
+      },
+      "dependencies": {
+        "internal": [],
+        "external": [
+          {
+            "name": "Google Fonts",
+            "type": "frontend_asset_dependency",
+            "details": "Base layout preconnects to fonts.googleapis.com and fonts.gstatic.com."
+          }
+        ]
+      },
+      "criticality": {
+        "level": "medium",
+        "reason": "It is the public and legal entry point, but it does not carry operational state or transaction processing."
+      },
+      "coupling": {
+        "level": "loose",
+        "reason": "No runtime API consumption was found; the repository is mostly static presentation and legal content.",
+        "coupled_to": []
+      },
+      "status": "active",
+      "status_notes": [
+        "Repository is already extracted and treated as its own source of truth.",
+        "Current implementation is static; no direct runtime integration with sibling repositories was found."
+      ],
+      "evidence": [
+        "neo-content-landing/README.md",
+        "neo-content-landing/package.json",
+        "neo-content-landing/src/pages/index.astro",
+        "neo-content-landing/src/pages/privacy.astro",
+        "neo-content-landing/src/pages/terms.astro"
+      ]
+    },
+    {
+      "id": "neo-content-dashboard",
+      "canonical_name": "neo-content-dashboard",
+      "local_path": "./neo-content-dashboard",
+      "aliases": ["dashboard"],
+      "git": {
+        "is_git_repo": true,
+        "origin_url": "https://github.com/NEO-FlowOFF/neo-content-dashboard.git",
+        "declared_remote_expected": "https://github.com/NEO-FlowOFF/neo-content-dashboard.git",
+        "remote_alignment": "aligned"
+      },
+      "description_functional": "Internal React/Vite dashboard for operational visibility and manual control of the TikTok Shop integration, including subscription sync, OAuth initiation, ingestion review, replay and audit views.",
+      "responsibility_category": "frontend_internal",
+      "responsibility_subtypes": ["operations_dashboard"],
+      "tech_stack": ["React", "Vite", "TypeScript", "Tailwind"],
+      "deployment_context": {
+        "mode": "frontend_static_or_vite_dev_server",
+        "notes": "No backend code was found; runtime depends on an external API base URL."
+      },
+      "inputs": {
+        "api": [],
+        "webhooks": [],
+        "events": [
+          "manual sync requests from UI",
+          "manual replay requests from UI",
+          "manual mute requests from UI",
+          "manual reactivation requests from UI",
+          "manual OAuth authorization bootstrap from UI"
+        ],
+        "queues": [],
+        "files": ["neo-content-dashboard/.env.example"],
+        "commands": ["pnpm dev", "pnpm build", "pnpm preview", "pnpm start"],
+        "ui": [
+          "overview screen",
+          "ranking/subscription screen",
+          "agency/ingestion-control screen"
+        ]
+      },
+      "outputs": {
+        "api": [
+          "GET /health",
+          "GET /oauth/tiktok-shop/authorize",
+          "GET /ops/tiktok-shop/subscriptions",
+          "POST /ops/tiktok-shop/subscriptions/sync",
+          "GET /ops/tiktok-shop/events",
+          "POST /ops/tiktok-shop/events/replay",
+          "GET /ops/tiktok-shop/webhook-health",
+          "POST /ops/tiktok-shop/controls/reactivate",
+          "POST /ops/tiktok-shop/controls/mute",
+          "GET /ops/tiktok-shop/audit"
+        ],
+        "webhooks": [],
+        "events": [
+          "opens TikTok Shop authorization URL in a new browser window"
+        ],
+        "queues": [],
+        "files": ["dist/*"],
+        "storage": [],
+        "commands": [],
+        "ui": [
+          "operational observability surface",
+          "manual controls for TikTok Shop integration"
+        ]
+      },
+      "dependencies": {
+        "internal": [
+          {
+            "project_id": "neo-content-accounts-api",
+            "type": "http_api",
+            "details": "Dashboard behavior is entirely driven by VITE_API_BASE_URL and VITE_TTS_* endpoint paths."
+          }
+        ],
+        "external": []
+      },
+      "criticality": {
+        "level": "high",
+        "reason": "It is the operator cockpit for health, audit, replay and webhook control, even though it does not own persistent state."
+      },
+      "coupling": {
+        "level": "tight",
+        "reason": "The UI is strongly coupled to a fixed set of backend endpoint contracts.",
+        "coupled_to": ["neo-content-accounts-api"]
+      },
+      "status": "active",
+      "status_notes": [
+        "Repository is extracted and treated as its own source of truth.",
+        "Current frontend contract is aligned with the backend operational surface under /ops/tiktok-shop/*."
+      ],
+      "evidence": [
+        "neo-content-dashboard/README.md",
+        "neo-content-dashboard/.env.example",
+        "neo-content-dashboard/src/lib/api.ts",
+        "neo-content-dashboard/src/views/Overview.tsx",
+        "neo-content-dashboard/src/views/Ranking.tsx",
+        "neo-content-dashboard/src/views/Agency.tsx"
+      ]
+    },
+    {
+      "id": "neo-content-accounts-api",
+      "canonical_name": "neo-content-accounts-api",
+      "local_path": "./neo-content-accounts-api",
+      "aliases": ["neo-content-accounts", "neo-content-worker"],
+      "git": {
+        "is_git_repo": true,
+        "origin_url": "https://github.com/NEO-FlowOFF/neo-content-accounts-api.git",
+        "declared_remote_expected": "https://github.com/NEO-FlowOFF/neo-content-accounts-api.git",
+        "remote_alignment": "aligned"
+      },
+      "description_functional": "Backend monorepo for TikTok Shop account integration. It combines a Fastify API, Prisma/Postgres persistence, BullMQ/Redis workers and a TikTok SDK layer.",
+      "responsibility_category": "api_backend",
+      "responsibility_subtypes": [
+        "api_backend",
+        "worker_backend",
+        "data_access",
+        "tiktok_sdk"
+      ],
+      "tech_stack": [
+        "TypeScript",
+        "Fastify",
+        "Prisma",
+        "Postgres",
+        "BullMQ",
+        "Redis",
+        "zod"
+      ],
+      "deployment_context": {
+        "mode": "railway_services_plus_background_worker",
+        "notes": "Control-plane docs map this repository to an API service plus a worker service, backed by Postgres and Redis."
+      },
+      "inputs": {
+        "api": [
+          "GET /health",
+          "GET /oauth/tiktok-shop/authorize",
+          "GET /oauth/tiktok-shop/callback",
+          "GET /ops/tiktok-shop/subscriptions",
+          "POST /ops/tiktok-shop/subscriptions/sync",
+          "GET /ops/tiktok-shop/events",
+          "POST /ops/tiktok-shop/events/replay",
+          "GET /ops/tiktok-shop/webhook-health",
+          "POST /ops/tiktok-shop/controls/reactivate",
+          "POST /ops/tiktok-shop/controls/mute",
+          "GET /ops/tiktok-shop/audit",
+          "GET /shops/:shopId/webhooks",
+          "PUT /shops/:shopId/webhooks",
+          "DELETE /shops/:shopId/webhooks/:eventType"
+        ],
+        "webhooks": ["POST /webhooks/tiktok-shop"],
+        "events": [
+          "scan-refreshable-accounts scheduler every 5 minutes",
+          "scan-pending-webhooks scheduler every 60 seconds",
+          "scan-platform-announcements scheduler every 60 minutes"
+        ],
+        "queues": [
+          "refresh-tiktok-tokens",
+          "project-tiktok-webhooks",
+          "publish-tiktok-inventory",
+          "monitor-platform-announcements"
+        ],
+        "files": [
+          "neo-content-accounts-api/.env.example",
+          "neo-content-accounts-api/packages/db/prisma/schema.prisma"
+        ],
+        "commands": [
+          "pnpm dev:api",
+          "pnpm dev:worker",
+          "pnpm start:api",
+          "pnpm start:worker",
+          "pnpm db:generate",
+          "pnpm db:validate"
+        ],
+        "ui": []
+      },
+      "outputs": {
+        "api": [
+          "TikTok token exchange GET /api/v2/token/get",
+          "TikTok token refresh GET /api/v2/token/refresh",
+          "TikTok authorized shops lookup",
+          "TikTok webhook list GET /event/202309/webhooks",
+          "TikTok webhook upsert POST /event/202309/webhooks",
+          "TikTok webhook delete DELETE /event/202309/webhooks",
+          "TikTok inventory update POST /product/inventory/update",
+          "Platform announcements RSS fetch from raw.githubusercontent.com"
+        ],
+        "webhooks": [],
+        "events": [
+          "persist SocialAccount token state",
+          "persist WebhookEventInbox rows",
+          "persist WebhookSubscriptionState rows",
+          "update CreatorStats rows",
+          "create ComplianceAlert rows",
+          "upsert OrderSyncLog rows"
+        ],
+        "queues": [
+          "refresh-tiktok-tokens",
+          "project-tiktok-webhooks",
+          "publish-tiktok-inventory",
+          "monitor-platform-announcements"
+        ],
+        "files": [],
+        "storage": ["Postgres via DATABASE_URL", "Redis via REDIS_URL"],
+        "commands": [],
+        "ui": []
+      },
+      "dependencies": {
+        "internal": [],
+        "external": [
+          {
+            "name": "TikTok Shop Open API",
+            "type": "platform_api"
+          },
+          {
+            "name": "Postgres",
+            "type": "database"
+          },
+          {
+            "name": "Redis",
+            "type": "queue_backend"
+          },
+          {
+            "name": "raw.githubusercontent.com/quangvo09/platform-announcement RSS",
+            "type": "external_feed"
+          }
+        ]
+      },
+      "criticality": {
+        "level": "critical",
+        "reason": "It is the transactional core for OAuth, webhook ingestion, persistence and async operational processing."
+      },
+      "coupling": {
+        "level": "tight",
+        "reason": "The repository is central to the runtime graph and depends on TikTok API behavior, Postgres state and Redis queues.",
+        "coupled_to": ["neo-content-dashboard"]
+      },
+      "status": "active",
+      "status_notes": [
+        "Repository is extracted and operationally central.",
+        "Folder name, package name and Git remote are aligned on neo-content-accounts-api."
+      ],
+      "evidence": [
+        "neo-content-accounts-api/README.md",
+        "neo-content-accounts-api/package.json",
+        "neo-content-accounts-api/.env.example",
+        "neo-content-accounts-api/packages/api/src/routes/ops.ts",
+        "neo-content-accounts-api/packages/api/src/ops-queues.ts",
+        "neo-content-accounts-api/packages/api/src/server.ts",
+        "neo-content-accounts-api/packages/api/src/tiktok-shop.ts",
+        "neo-content-accounts-api/packages/worker/src/main.ts",
+        "neo-content-accounts-api/packages/worker/src/jobs.ts",
+        "neo-content-accounts-api/packages/worker/src/queues.ts",
+        "neo-content-accounts-api/packages/db/prisma/schema.prisma"
+      ]
+    },
+    {
+      "id": "neo-content-engine",
+      "canonical_name": "neo-content-engine",
+      "local_path": "./neo-content-engine",
+      "aliases": ["content-engine"],
+      "git": {
+        "is_git_repo": true,
+        "origin_url": "https://github.com/NEO-FlowOFF/neo-content-engine.git",
+        "declared_remote_expected": "https://github.com/NEO-FlowOFF/neo-content-engine.git",
+        "remote_alignment": "aligned"
+      },
+      "description_functional": "Local-first Python pipeline that mines product opportunities, structures briefs, generates scripts/audio/video and optionally publishes resulting assets.",
+      "responsibility_category": "content_pipeline",
+      "responsibility_subtypes": [
+        "research_pipeline",
+        "creative_generation",
+        "asset_renderer"
+      ],
+      "tech_stack": [
+        "Python",
+        "pandas",
+        "requests",
+        "google_cloud_text_to_speech",
+        "MinIO",
+        "ffmpeg",
+        "playwright"
+      ],
+      "deployment_context": {
+        "mode": "local_first_runtime",
+        "notes": "Control-plane marks this module as outside Railway. Heavy runtime artifacts remain local or in object storage."
+      },
+      "inputs": {
+        "api": [
+          "TikTok Shop product search",
+          "Tavily search API",
+          "Serper search API",
+          "Apify search actor API",
+          "Vertex AI / Gemini text and image APIs",
+          "Google Cloud Text-to-Speech API",
+          "optional Upload-Post API"
+        ],
+        "webhooks": [],
+        "events": [],
+        "queues": [],
+        "files": [
+          "neo-content-engine/.env.example",
+          "neo-content-engine/branding.json",
+          "neo-content-engine/research_config.json",
+          "neo-content-engine/runtime/inputs/pending_products.csv",
+          "neo-content-engine/assets/images/*"
+        ],
+        "commands": [
+          "make setup",
+          "make doctor",
+          "make mine-real",
+          "make run-real",
+          "make now",
+          "make upload-post",
+          "make minio-up"
+        ],
+        "ui": []
+      },
+      "outputs": {
+        "api": ["optional upload to Upload-Post API"],
+        "webhooks": [],
+        "events": [],
+        "queues": [],
+        "files": [
+          "neo-content-engine/runtime/outputs/*_final_render.mp4",
+          "neo-content-engine/runtime/outputs/*_meta.json",
+          "neo-content-engine/runtime/inputs/archive/processed_<timestamp>.csv",
+          "neo-content-engine/runtime/assets/*_audio.mp3"
+        ],
+        "storage": ["optional MinIO object upload for video and metadata"],
+        "commands": [],
+        "ui": []
+      },
+      "dependencies": {
+        "internal": [],
+        "external": [
+          {
+            "name": "TikTok Shop Open API",
+            "type": "platform_api"
+          },
+          {
+            "name": "Tavily",
+            "type": "search_api"
+          },
+          {
+            "name": "Serper",
+            "type": "search_api"
+          },
+          {
+            "name": "Apify",
+            "type": "search_api"
+          },
+          {
+            "name": "Vertex AI / Gemini",
+            "type": "llm_and_image_api"
+          },
+          {
+            "name": "Google Cloud Text-to-Speech",
+            "type": "tts_api"
+          },
+          {
+            "name": "MinIO compatible storage",
+            "type": "object_storage"
+          },
+          {
+            "name": "Upload-Post API",
+            "type": "distribution_api"
+          },
+          {
+            "name": "ffmpeg",
+            "type": "system_binary"
+          }
+        ]
+      },
+      "criticality": {
+        "level": "high",
+        "reason": "It is the production pipeline for research-to-creative asset generation, even though it is not the transactional system of record."
+      },
+      "coupling": {
+        "level": "moderate",
+        "reason": "It is loosely coupled to sibling repositories but strongly dependent on external APIs, local runtime state and media tooling.",
+        "coupled_to": ["neo-control-plane"]
+      },
+      "status": "active",
+      "status_notes": [
+        "Repository is already extracted and is the current source of truth for the content pipeline.",
+        "Runtime is local-first and heavy artifacts stay outside Git history."
+      ],
+      "evidence": [
+        "neo-content-engine/README.md",
+        "neo-content-engine/SETUP.md",
+        "neo-content-engine/.env.example",
+        "neo-content-engine/requirements.txt",
+        "neo-content-engine/scripts/mine_tiktok_shop.py",
+        "neo-content-engine/scripts/run_neo_tiktokshop.py",
+        "neo-content-engine/research_config.json"
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "control-plane_orchestrates_accounts",
+      "from": "neo-control-plane",
+      "to": "neo-content-accounts-api",
+      "type": "local_command_orchestration",
+      "state": "active",
+      "details": "workspace_orchestrator.sh proxies build, check, dev and db commands into the accounts repository.",
+      "evidence": ["neo-control-plane/tools/workspace_orchestrator.sh"]
+    },
+    {
+      "id": "control-plane_orchestrates_dashboard",
+      "from": "neo-control-plane",
+      "to": "neo-content-dashboard",
+      "type": "local_command_orchestration",
+      "state": "active",
+      "details": "workspace_orchestrator.sh proxies build, check and dev commands into the dashboard repository.",
+      "evidence": ["neo-control-plane/tools/workspace_orchestrator.sh"]
+    },
+    {
+      "id": "control-plane_orchestrates_landing",
+      "from": "neo-control-plane",
+      "to": "neo-content-landing",
+      "type": "local_command_orchestration",
+      "state": "active",
+      "details": "workspace_orchestrator.sh proxies build, check and dev commands into the landing repository.",
+      "evidence": ["neo-control-plane/tools/workspace_orchestrator.sh"]
+    },
+    {
+      "id": "control-plane_bridges_engine",
+      "from": "neo-control-plane",
+      "to": "neo-content-engine",
+      "type": "local_command_orchestration",
+      "state": "active",
+      "details": "workspace_orchestrator.sh proxies content:* and minio helper commands into the content engine repository.",
+      "evidence": [
+        "neo-control-plane/tools/workspace_orchestrator.sh",
+        "neo-control-plane/manifests/integrations.json"
+      ]
+    },
+    {
+      "id": "dashboard_consumes_accounts_api",
+      "from": "neo-content-dashboard",
+      "to": "neo-content-accounts-api",
+      "type": "http_api_contract",
+      "state": "aligned",
+      "details": "Dashboard code consumes VITE_API_BASE_URL plus /ops/tiktok-shop/* endpoints, and the backend now exposes that operational surface alongside /health, /oauth/tiktok-shop/*, /webhooks/tiktok-shop and /shops/:shopId/webhooks.",
+      "evidence": [
+        "neo-content-dashboard/src/lib/api.ts",
+        "neo-content-accounts-api/packages/api/src/server.ts",
+        "neo-content-accounts-api/packages/api/src/routes/ops.ts"
+      ]
+    }
+  ]
+}
