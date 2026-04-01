@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "generated_at": "2026-04-01T04:57:43-03:00",
+  "generated_at": "2026-04-01T14:49:43-03:00",
   "workspace": {
     "root_path": "/Users/nettomello/CODIGOS/flowoff_tik_tok_partner",
     "registry_file": "neo-control-plane/manifests/workspace.registry.json",
@@ -39,6 +39,7 @@
   "system_observations": [
     "The workspace is modular: neo-control-plane treats sibling repositories as sources of truth instead of keeping a permanent monorepo runtime.",
     "neo-content-dashboard and neo-content-accounts-api now share an aligned operational contract over /ops/tiktok-shop/* endpoints.",
+    "Production evidence confirms the TikTok SHOP-MAN-MULTI token lifecycle: the worker scans due accounts, enqueues refresh jobs, rotates tokens and persists updated expiry timestamps without manual intervention.",
     "neo-content-engine is operationally isolated from Railway and keeps heavy runtime state outside Git."
   ],
   "projects": [
@@ -488,7 +489,8 @@
       "status": "active",
       "status_notes": [
         "Repository is extracted and operationally central.",
-        "Folder name, package name and Git remote are aligned on neo-content-accounts-api."
+        "Folder name, package name and Git remote are aligned on neo-content-accounts-api.",
+        "Production evidence now confirms autonomous token refresh for TikTok Shop accounts, including queue scheduling, worker execution and persistence of tokenExpiresAt, updatedAt and lastRefreshedAt."
       ],
       "evidence": [
         "neo-content-accounts-api/README.md",
@@ -501,7 +503,10 @@
         "neo-content-accounts-api/packages/worker/src/main.ts",
         "neo-content-accounts-api/packages/worker/src/jobs.ts",
         "neo-content-accounts-api/packages/worker/src/queues.ts",
-        "neo-content-accounts-api/packages/db/prisma/schema.prisma"
+        "neo-content-accounts-api/packages/db/prisma/schema.prisma",
+        "neo-content-accounts-api/packages/db/src/social-accounts.ts",
+        "neo-content-accounts-api/logs/logs.1775061963283.json",
+        "neo-content-accounts-api/logs/logs.1775061998281.json"
       ]
     },
     {
@@ -693,11 +698,12 @@
       "to": "neo-content-accounts-api",
       "type": "http_api_contract",
       "state": "aligned",
-      "details": "Dashboard code consumes VITE_API_BASE_URL plus /ops/tiktok-shop/* endpoints, and the backend now exposes that operational surface alongside /health, /oauth/tiktok-shop/*, /webhooks/tiktok-shop and /shops/:shopId/webhooks.",
+      "details": "Dashboard code consumes VITE_API_BASE_URL plus /ops/tiktok-shop/* endpoints, and the backend now exposes that operational surface in production alongside /health, /oauth/tiktok-shop/*, /webhooks/tiktok-shop and /shops/:shopId/webhooks.",
       "evidence": [
         "neo-content-dashboard/src/lib/api.ts",
         "neo-content-accounts-api/packages/api/src/server.ts",
-        "neo-content-accounts-api/packages/api/src/routes/ops.ts"
+        "neo-content-accounts-api/packages/api/src/routes/ops.ts",
+        "neo-content-accounts-api/logs/logs.1775061998281.json"
       ]
     }
   ]
