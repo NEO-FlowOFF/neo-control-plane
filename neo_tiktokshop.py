@@ -106,6 +106,12 @@ def render_faceless_video(bg_video_path: str, audio_path: str, output_path: str,
 # import pandas as pd
 # from pathlib import Path
 
+def normalize_cell(value) -> str:
+    if value is None or pd.isna(value):
+        return ""
+    text = str(value).strip()
+    return "" if text.lower() == "nan" else text
+
 def run_dynamic_arbitrage_engine():
     print("\033[96m[SISTEMA INICIADO] Booting Arbitrage Engine (Datalink Node)...\033[0m")
 
@@ -129,7 +135,28 @@ def run_dynamic_arbitrage_engine():
 
     # 3. Loop de Produção
     for index, prod in df_pending.iterrows():
-        print(f"\n\033[95m[PROCESSANDO NÓ] ID: {prod['id']} | {prod['name']}\033[0m")
+        # Normalize fields to avoid "nan" string collision from pandas NaNs
+        raw_id = prod.get("id")
+        raw_name = prod.get("name")
+        raw_problem = prod.get("problem")
+        raw_offer = prod.get("offer")
+
+        id_str = normalize_cell(raw_id)
+        name_str = normalize_cell(raw_name)
+        problem_str = normalize_cell(raw_problem)
+        offer_str = normalize_cell(raw_offer)
+
+        # Apply defaults / fallbacks
+        if not id_str:
+            id_str = f"row_{index}"
+        if not name_str:
+            name_str = "Produto sem nome"
+        if not problem_str:
+            problem_str = "Problema nao definido"
+        if not offer_str:
+            offer_str = "Oferta nao definida"
+
+        print(f"\n\033[95m[PROCESSANDO NÓ] ID: {id_str} | {name_str}\033[0m")
 
         # O Nó 01 local envia caminhos absolutos do Mac/Windows.
         # Aqui forçamos a leitura do vídeo de base alojado no Drive.
@@ -141,21 +168,21 @@ def run_dynamic_arbitrage_engine():
 
         try:
             # A. Autoria Algorítmica (LLM)
-            script_data = synthesize_narrative_node(prod['name'], str(prod['problem']), str(prod['offer']))
+            script_data = synthesize_narrative_node(name_str, problem_str, offer_str)
 
             # B. Síntese Neural (TTS)
-            audio_path = str(base_path / 'assets' / f"{prod['id']}_audio.mp3")
+            audio_path = str(base_path / 'assets' / f"{id_str}_audio.mp3")
             synthesize_audio_node(script_data['tts_audio_script'], audio_path)
 
             # C. Renderização H.264
-            video_out = str(base_path / 'outputs' / f"{prod['id']}_final_render.mp4")
+            video_out = str(base_path / 'outputs' / f"{id_str}_final_render.mp4")
             render_faceless_video(bg_video_path, audio_path, video_out, script_data['hook_text_screen'])
 
             print(f"\033[92m[CICLO FECHADO] Ativo gerado com sucesso: {video_out}\033[0m")
 
         except Exception as e:
             # Falha contida: um erro de API não derruba o lote inteiro
-            print(f"\033[91m[CRASH] Falha no loop do produto {prod['id']}: {e}\033[0m")
+            print(f"\033[91m[CRASH] Falha no loop do produto {id_str}: {e}\033[0m")
             continue
 
         time.sleep(2) # Backoff algorítmico de proteção de API
